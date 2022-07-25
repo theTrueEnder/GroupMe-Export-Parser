@@ -1,10 +1,3 @@
-def detect(file):
-    import chardet    
-    rawdata = open(file, "r").read()
-    result = chardet.detect(rawdata)
-    charenc = result['encoding']
-    return charenc
-
 '''
 TODO
 - Likes
@@ -15,31 +8,37 @@ TODO
 
 '''
 
-from ast import SetComp
 import json
-import msgUnit as msgUnit
+import msg_unit as msg_unit
 import conversation as conversation
 import os
 
-CHAR_ENCOD = 'cp1252'
-CHAR_DECOD = 'utf-8'
+GROUPME_FILE_PATH = 'GroupMe Parser\\Groupme_Honors\\'
 REVERSED = True
+USE_NICKNAMES = False
 
-def clean(unsanitized):
-    original = unsanitized
-    if unsanitized is not None:
-        if "´" or "’" or "`" or "�" or "“" or "”" or '\u202c' or '\u202d' in unsanitized:
-            sanitized = unsanitized
-            sanitized = sanitized.replace("´", "'")
-            sanitized = sanitized.replace("’", "'")
-            sanitized = sanitized.replace("`", "'")
-            sanitized = sanitized.replace("�", '<emoji>')
-            sanitized = sanitized.replace("“", '"')
-            sanitized = sanitized.replace("”", '"')
-            sanitized = sanitized.replace('\u202c', '')
-            sanitized = sanitized.replace('\u202d', '')
-            print("Warning: Input Sanitized ")
-    return sanitized
+
+# Remove bad characters created from encoding conversion
+def clean_text(dirty):
+    if dirty is not None:
+        if "´" or "’" or "`" or "�" or "“" or "”" or '\u202c' or '\u202d' in dirty:
+            clean = dirty
+            clean = clean.replace("´", "'")
+            clean = clean.replace("’", "'")
+            clean = clean.replace("`", "'")
+            clean = clean.replace("�", '<emoji>')
+            clean = clean.replace("“", '"')
+            clean = clean.replace("”", '"')
+            clean = clean.replace('\u202c', '')
+            clean = clean.replace('\u202d', '')
+    return clean
+
+def add_msg(msg_list, msg):
+    if REVERSED:
+        msg_list.insert(0, msg)
+    else:
+        msg_list.append(msg)
+    return msg_list
 
 def run():
     '''
@@ -57,105 +56,70 @@ def run():
     
     '''
     #get conversation json data
-    os.chdir('GroupMe Parser\\Groupme_Honors')
-
     print('Opening conversation file...')
-    with open('conversation.json', 'r') as f:
+    with open(GROUPME_FILE_PATH + 'conversation.json', 'r') as f:
         raw_cvn = json.load(f)
     
-    cvn = conversation.conversation()
 
     #get message json data
     print('Opening message file...')
-    with open('message.json', 'r', encoding=CHAR_DECOD, errors='ignore') as f:
+    with open(GROUPME_FILE_PATH + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
         raw_msgs = json.load(f)
-
-    os.chdir('...')
-    #print(os.getcwd())
     
+
     #parse conversation to get conversation metadata and user list
     print('Parsing files...')
+    cvn = conversation.conversation()
     cvn.parse(raw_cvn)
     msgs = []
     for msg in raw_msgs:
-        tmp_msg = msgUnit.msgUnit()
+        tmp_msg = msg_unit.msg_unit()
         tmp_msg.parse(msg)
         msgs.append(tmp_msg)
 
-    #write conversation metadata to output file
-    print('Exporting data...')
+
+    #format the conversation and message data for export
+    print('Formatting data...')
     cvn_export = cvn.export()
     msg_export = '\n'.join([msg.s_simple_export() for msg in msgs])
-
-    #delete conversation and message list
-    print('Deleting data...')
-    #del cvn
-    #del msgs
-
-    #write message list to output file
-    print('Writing output to text file...')
-
     dict_msg = [msg.simple_export() for msg in msgs]
     s = []
-    for msg in dict_msg:
+
+    for msg in dict_msg: # get names/nicknames of users instead of ID numbers
         temp_member = cvn.get_member_by_id(msg['sender'])
         if temp_member is not None:
-            #msg['sender'] = temp_member.nickname
-            msg['sender'] = temp_member.name
-        s.append([
+            if USE_NICKNAMES:
+                msg['sender'] = temp_member.nickname
+            else:
+                msg['sender'] = temp_member.name
+        
+        s.append([ #this is the message format, for customization see here
             msg["sender"], 
             f' at {msg["time"]}: ', 
             msg["message"]
         ])
-
-    col_width1 = max(len(word) for word in s[0]) + 2  # padding
-    col_width2 = max(len(word) for word in s[1]) + 2  # padding
-    col_width3 = max(len(word) for word in s[2]) + 2  # padding
-    #msg_export = ''.join(f'{word[0]:<{col_width1}}{word[1]:<{col_width2}}{word[2]:<{col_width3}}' for word in s)
-    #msg_export = ''.join([s[i][0].ljust(col_width1) + s[i][1].ljust(col_width2) + s[i][2].ljust(col_width3) for i in range(len(s))])
-    #t = s[0][i].ljust(col_width1) + s[1][i].ljust(col_width2) + s[2][i].ljust(col_width3)
-    #t = [(s[i][0]).rjust(col_width1) for i in range(len(s))]
-    t = []
-    for i in range(len(s)):
-        r = ''
-        if s[i][0] is not None:
-            r += s[i][0]#.ljust(col_width1)
-        if s[i][1] is not None:
-            r += s[i][1]#.ljust(col_width2)
-        if s[i][2] is not None:
-            r += s[i][2]#.rjust(col_width3)
-        if REVERSED:
-            t.insert(0, r)
-        else:
-            t.append(r)
-
-    msg_export = '\n'.join(t)
-
-
-    # {
-    #     'message': self.text,
-    #     'sender': self.senderID,
-    #     'time': self.time
-    # }
     
-    cvn_export = clean(cvn_export)
-    msg_export = clean(msg_export)
+    concat_msgs = []
+    for msg in s:
+        for part in msg:
+            try:
+                part + 'teststring'
+                concat_msgs = add_msg(concat_msgs, part)
+            except: # if message part won't concatenate, ignore
+                continue
+        concat_msgs = add_msg(concat_msgs, '\n')
 
-    with open('parser_output.txt', 'w', encoding=CHAR_DECOD, errors='ignore') as f:
+    msg_export = ''.join(concat_msgs)
+    
+    cvn_export = clean_text(cvn_export)
+    msg_export = clean_text(msg_export)
+
+    #write message list to output file
+    print('Writing output to text file...')
+    with open(GROUPME_FILE_PATH + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
         f.write(cvn_export+'\n')        
         f.write(msg_export)
         
     print('Program complete.')
 
-
 run()
-with open('output.txt', 'r', encoding=CHAR_DECOD, errors='ignore') as f:
-    raw = f.read()
-
-'''
-encoded_raw = raw.encode('utf-8')
-#raw.decode('cp1252').encode('utf-8')
-with open('output_utf8.txt', 'w', encoding='utf-8') as f:
-    f.write(encoded_raw)
-    # f.write(encoded_raw.decode('utf-8')) 
-'''

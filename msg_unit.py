@@ -3,7 +3,7 @@ def unix_to_dt(time):
     return datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
 
 
-class msgUnit():
+class msg_unit():
     '''
     def __init__(self, msg):
         self.msg = msg
@@ -256,13 +256,13 @@ class msgUnit():
         '''
         #return "msg: " + self.msg + "\nsender: " + self.sender + "\ntime: " + self.time + "\n"
 
-class reply(msgUnit):
+class reply(msg_unit):
     def reply(self, msg, sender, time):
         self.__init__(self, msg, sender, time)
         self.replyID = None
         self.baseReplyID = None
 
-class image(msgUnit):
+class image(msg_unit):
     def image(self, msg, sender, time):
         self.__init__(self, msg, sender, time)
         self.url = [] #vector <string>
