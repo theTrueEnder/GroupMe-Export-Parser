@@ -2,6 +2,22 @@ from datetime import datetime
 def unix_to_dt(time):
     return datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
 
+# Remove bad characters created from encoding conversion
+def clean_text(dirty):
+    if dirty is not None:
+        if "´" or "’" or "`" or "�" or "“" or "”" or '\u202c' or '\u202d' in dirty:
+            clean = dirty
+            clean = clean.replace("´", "'")
+            clean = clean.replace("’", "'")
+            clean = clean.replace("`", "'")
+            clean = clean.replace("�", '<emoji>')
+            clean = clean.replace("“", '"')
+            clean = clean.replace("”", '"')
+            clean = clean.replace('\u202c', '')
+            clean = clean.replace('\u202d', '')
+        return clean
+    else:
+        return None
 
 class msg_unit():
     def __init__(self):
@@ -176,12 +192,12 @@ class msg_unit():
         self._avatar_url = json['avatar_url']
         self._group_id = json['group_id']
         self._msg_id = json['id']
-        self._name = self.clean(json['name'])
+        self._name = clean_text(json['name'])
         self._sender_id = json['sender_id']
         self._senderType = json['sender_type']
         self._sourceGUID = json['source_guid']
         self._system = json['system']
-        self._text = self.clean(json['text'])
+        self._text = clean_text(json['text'])
         self._user_id = json['user_id']
         self._platform = json['platform']
         self._created_at = json['created_at']
@@ -189,20 +205,7 @@ class msg_unit():
 
         self.time = unix_to_dt(self.created_at)
 
-    # Remove bad characters created from encoding conversion
-    def clean_text(dirty):
-        if dirty is not None:
-            if "´" or "’" or "`" or "�" or "“" or "”" or '\u202c' or '\u202d' in dirty:
-                clean = dirty
-                clean = clean.replace("´", "'")
-                clean = clean.replace("’", "'")
-                clean = clean.replace("`", "'")
-                clean = clean.replace("�", '<emoji>')
-                clean = clean.replace("“", '"')
-                clean = clean.replace("”", '"')
-                clean = clean.replace('\u202c', '')
-                clean = clean.replace('\u202d', '')
-        return clean
+    
 
     # returns the msg_unit's message, sender, and time in a dict
     def simple_export(self):

@@ -36,7 +36,9 @@ def clean_text(dirty):
             clean = clean.replace("”", '"')
             clean = clean.replace('\u202c', '')
             clean = clean.replace('\u202d', '')
-    return clean
+        return clean
+    else:
+        return None
 
 def add_msg(msg_list, msg):
     if REVERSED:
@@ -120,7 +122,7 @@ def run():
     msg_export = clean_text(msg_export)
 
     #write message list to output file
-    print('Writing output to text file...')
+    print(f'Writing output to {GROUPME_FILE_PATH}output.txt...')
     with open(GROUPME_FILE_PATH + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
         f.write(cvn_export+'\n')        
         f.write(msg_export)
