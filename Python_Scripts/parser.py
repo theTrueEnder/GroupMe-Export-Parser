@@ -8,14 +8,19 @@ TODO
 
 '''
 
+'''PARAMETERS'''
+GROUPME_FILE_PATH = 'GroupMe Parser\\Groupme_Honors\\'
+REVERSED = True
+USE_NICKNAMES = False
+ENABLE_SYSTEM_MESSAGES = True
+'''END PARAMETERS'''
+
 import json
 import msg_unit as msg_unit
 import conversation as conversation
 import os
 
-GROUPME_FILE_PATH = 'GroupMe Parser\\Groupme_Honors\\'
-REVERSED = True
-USE_NICKNAMES = False
+
 
 
 # Remove bad characters created from encoding conversion
@@ -92,12 +97,12 @@ def run():
                 msg['sender'] = temp_member.nickname
             else:
                 msg['sender'] = temp_member.name
-        
-        s.append([ #this is the message format, for customization see here
-            msg["sender"], 
-            f' at {msg["time"]}: ', 
-            msg["message"]
-        ])
+        if ENABLE_SYSTEM_MESSAGES:
+            s.append([ #this is the message format, for customization see here
+                msg["sender"], 
+                f' at {msg["time"]}: ', 
+                msg["message"]
+            ])
     
     concat_msgs = []
     for msg in s:

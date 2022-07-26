@@ -37,12 +37,11 @@ class attachments():
 
     def image_edited(self, attachments):
         self.image_url = attachments['url']
-        self.source_url = attachments['source_url']
+        self.url = attachments['source_url']
 
     def video(self, attachments):
         self.url = attachments['url']
         self.preview_url = attachments['preview_url']
-        self.video_url = attachments['url']
 
     def emoji(self, attachments):
         self.placeholder = EMOJI_PLACEHOLDER

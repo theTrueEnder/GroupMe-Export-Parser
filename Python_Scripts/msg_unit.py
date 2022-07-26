@@ -4,40 +4,6 @@ def unix_to_dt(time):
 
 
 class msg_unit():
-    '''
-    def __init__(self, msg):
-
-
-        self.msg = msg
-        self.id = msg['id']
-        self.type = msg['type']
-        self.sender = msg['name']
-        self.sender_id = msg['sender_id']
-        self.avatar_url = msg['avatar_url']
-        self.text = msg['text']
-        self.attachments = msg['attachments']
-        self.favorited_by = msg['favorited_by']
-        self.created_at = msg['created_at']
-        self.group_id = msg['group_id']
-        self.system_message = msg['system_message']
-        self.favorited_by = msg['favorited_by']
-        self.attachments = msg['attachments']
-        self.mentions = msg['mentions']
-        self.urls = msg['urls']
-        self.emoji_counts = msg['emoji_counts']
-        self.reactions = msg['reactions']
-        self.client_id = msg['client_id']
-        self.group_name = msg['group_name']
-        self.group_image_url = msg['group_image_url']
-        self.group_creator_id = msg['group_creator_id']
-        self.group_creator_name = msg['group_creator_name']
-        self.group_creator_avatar_url = msg['group_creator_avatar_url']
-        self.group_description = msg['group_description']
-        self.group_large_image_url = msg['group_large_image_url']
-        self.group_small_image_url = msg['group_small_image_url']
-        self.group_join_type = msg['group_join_type']
-        self.group_creator_user_id
-    '''
     def __init__(self):
         self._avatar_url = None
         self._group_id = None
@@ -65,7 +31,6 @@ class msg_unit():
     @avatar_url.deleter
     def avatar_url(self):
         del self._avatar_url
-
 
     ''' GROUP ID '''
     @property
@@ -139,7 +104,6 @@ class msg_unit():
         return self._system
     @system.setter
     def system(self, value):
-        value = bool(value)
         if value != True and value != False:
             print("Error: system must be True or False, instead got ", value)
             return
@@ -225,19 +189,22 @@ class msg_unit():
 
         self.time = unix_to_dt(self.created_at)
 
-    def clean(self, s):
-        o = s
-        if s is not None:
-            s.strip()
-            if "´" or "’" or "`" in s:
-                s.replace("´", "'")
-                s.replace("’", "'")
-                s.replace("`", "'")
-        
-        if o != s:
-            print("Warning: ", o, " changed to ", s)
-        return s
+    # Remove bad characters created from encoding conversion
+    def clean_text(dirty):
+        if dirty is not None:
+            if "´" or "’" or "`" or "�" or "“" or "”" or '\u202c' or '\u202d' in dirty:
+                clean = dirty
+                clean = clean.replace("´", "'")
+                clean = clean.replace("’", "'")
+                clean = clean.replace("`", "'")
+                clean = clean.replace("�", '<emoji>')
+                clean = clean.replace("“", '"')
+                clean = clean.replace("”", '"')
+                clean = clean.replace('\u202c', '')
+                clean = clean.replace('\u202d', '')
+        return clean
 
+    # returns the msg_unit's message, sender, and time in a dict
     def simple_export(self):
         return {
             'message': self.text,
@@ -245,15 +212,10 @@ class msg_unit():
             'time': self.time
         }
 
+    # returns the msg_unit's message, sender, and time in a string
     def s_simple_export(self):
         return f'message: {self.text} \nsender: {self.sender_id} \ntime: {self.time}'
 
     def __str__(self):
         s = self.name + " at " + unix_to_dt(self.createdt) + ": " + self.text
         print(f"${s:20}")
-
-        ''' 
-        TODO
-        Likedby list
-        '''
-        #return "msg: " + self.msg + "\nsender: " + self.sender + "\ntime: " + self.time + "\n"
