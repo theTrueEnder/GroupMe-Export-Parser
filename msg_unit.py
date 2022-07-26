@@ -6,6 +6,8 @@ def unix_to_dt(time):
 class msg_unit():
     '''
     def __init__(self, msg):
+
+
         self.msg = msg
         self.id = msg['id']
         self.type = msg['type']
@@ -37,55 +39,55 @@ class msg_unit():
         self.group_creator_user_id
     '''
     def __init__(self):
-        self.time = None
-        
-        self._created_at = None
-        self._favorited_by = []
-        self._avatarUrl = None
-        self._groupID = None
-        self._msgID = None
+        self._avatar_url = None
+        self._group_id = None
+        self._msg_id = None
         self._name = None
-        self._senderID = None
+        self._sender_id = None
         self._senderType = None
         self._sourceGUID = None
         self._system = False
         self._text = None
-        self._userID = None
+        self._user_id = None
         self._platform = None
+        self._created_at = None
+        self._favorited_by = []
+
+        self.time = None
 
     ''' AVATAR URL '''
     @property
-    def avatarUrl(self):
-        return self._avatarUrl   
-    @avatarUrl.setter
-    def avatarUrl(self, value):
-        self._avatarUrl = value 
-    @avatarUrl.deleter
-    def avatarUrl(self):
-        del self._avatarUrl
+    def avatar_url(self):
+        return self._avatar_url   
+    @avatar_url.setter
+    def avatar_url(self, value):
+        self._avatar_url = value 
+    @avatar_url.deleter
+    def avatar_url(self):
+        del self._avatar_url
 
 
     ''' GROUP ID '''
     @property
-    def groupID(self):
-        return self._groupID
-    @groupID.setter
-    def groupID(self, value):
-        self._groupID = value
-    @groupID.deleter
-    def groupID(self):
-        del self._groupID
+    def group_id(self):
+        return self._group_id
+    @group_id.setter
+    def group_id(self, value):
+        self._group_id = value
+    @group_id.deleter
+    def group_id(self):
+        del self._group_id
     
     ''' MSG ID '''
     @property
-    def msgID(self):
-        return self._msgID
-    @msgID.setter
-    def msgID(self, value):
-        self._msgID = value
-    @msgID.deleter
-    def msgID(self):
-        del self._msgID
+    def msg_id(self):
+        return self._msg_id
+    @msg_id.setter
+    def msg_id(self, value):
+        self._msg_id = value
+    @msg_id.deleter
+    def msg_id(self):
+        del self._msg_id
 
     ''' NAME '''
     @property
@@ -100,14 +102,14 @@ class msg_unit():
 
     ''' SENDER ID '''
     @property
-    def senderID(self):
-        return self._senderID
-    @senderID.setter
-    def senderID(self, value):
-        self._senderID = value
-    @senderID.deleter
-    def senderID(self):
-        del self._senderID
+    def sender_id(self):
+        return self._sender_id
+    @sender_id.setter
+    def sender_id(self, value):
+        self._sender_id = value
+    @sender_id.deleter
+    def sender_id(self):
+        del self._sender_id
 
     ''' SENDER TYPE '''
     @property
@@ -162,16 +164,16 @@ class msg_unit():
     def text(self):
         del self._text
     
-    ''' USERID '''
+    ''' USER_id '''
     @property
-    def userID(self):
-        return self._userID
-    @userID.setter
-    def userID(self, value):
-        self._userID = value
-    @userID.deleter
-    def userID(self):
-        del self._userID
+    def user_id(self):
+        return self._user_id
+    @user_id.setter
+    def user_id(self, value):
+        self._user_id = value
+    @user_id.deleter
+    def user_id(self):
+        del self._user_id
     
     ''' PLATFORM '''
     @property
@@ -207,16 +209,16 @@ class msg_unit():
         del self._favorited_by
     
     def parse(self, json):
-        self._avatarUrl = json['avatar_url']
-        self._groupID = json['group_id']
-        self._msgID = json['id']
+        self._avatar_url = json['avatar_url']
+        self._group_id = json['group_id']
+        self._msg_id = json['id']
         self._name = self.clean(json['name'])
-        self._senderID = json['sender_id']
+        self._sender_id = json['sender_id']
         self._senderType = json['sender_type']
         self._sourceGUID = json['source_guid']
         self._system = json['system']
         self._text = self.clean(json['text'])
-        self._userID = json['user_id']
+        self._user_id = json['user_id']
         self._platform = json['platform']
         self._created_at = json['created_at']
         self._favorited_by = json['favorited_by']
@@ -239,12 +241,12 @@ class msg_unit():
     def simple_export(self):
         return {
             'message': self.text,
-            'sender': self.senderID,
+            'sender': self.sender_id,
             'time': self.time
         }
 
     def s_simple_export(self):
-        return f'message: {self.text} \nsender: {self.senderID} \ntime: {self.time}'
+        return f'message: {self.text} \nsender: {self.sender_id} \ntime: {self.time}'
 
     def __str__(self):
         s = self.name + " at " + unix_to_dt(self.createdt) + ": " + self.text
@@ -255,14 +257,3 @@ class msg_unit():
         Likedby list
         '''
         #return "msg: " + self.msg + "\nsender: " + self.sender + "\ntime: " + self.time + "\n"
-
-class reply(msg_unit):
-    def reply(self, msg, sender, time):
-        self.__init__(self, msg, sender, time)
-        self.replyID = None
-        self.baseReplyID = None
-
-class image(msg_unit):
-    def image(self, msg, sender, time):
-        self.__init__(self, msg, sender, time)
-        self.url = [] #vector <string>
