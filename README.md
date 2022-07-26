@@ -13,7 +13,7 @@
 
 ## Want more GroupMe information?
 
-Go see my wiki! GroupMe's API page provides little information in the way of interpreting the export JSON files, so I will document as much as I can for future use! Use of code in this project is covered in the MIT License (also found in the LICENSE file). Essentially, you're free to use whatever you'd like, but it would be greatly appreciated if you would mention/link me/my work where use use my code (:  If you want to use code/ideas, please let me know in the Discussions section or send me an email (see the wiki)!! I'd love to see what you can do!
+Go see my [wiki](https://github.com/theTrueEnder/GroupMe-Export-Parser/wiki)! GroupMe's API page provides little information in the way of interpreting the export JSON files, so I will document as much as I can for future use! Use of code in this project is covered in the MIT License (also found in the LICENSE file). Essentially, you're free to use whatever you'd like, but it would be greatly appreciated if you would mention/link me/my work where use use my code (:  If you want to use code/ideas, please let me know in the Discussions section or send me an email (see the wiki)!! I'd love to see what you can do!
 
 ***
 
