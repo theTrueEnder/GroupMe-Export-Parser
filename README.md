@@ -11,10 +11,12 @@
 # TO-DO
 - Likes
 - Images
+- Attachments
+- Events
 - Optional system messages
 - PDF Export
 - PySimpleGUI and PyInstaller
-- Other Attatchments
+- Single User Export
 
 
 # FAQ
