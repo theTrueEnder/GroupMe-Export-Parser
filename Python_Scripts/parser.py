@@ -57,7 +57,7 @@ def add_msg(msg_list, msg):
     return msg_list
 
 def run(settings):
-    settings["user_data_folder"] 
+    settings["user_data_folder"] += '\\'
     REVERSED = settings["reversed"]
     settings["nicknames"]
     settings["enable_system_messages"]
