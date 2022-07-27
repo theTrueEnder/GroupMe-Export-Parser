@@ -4,11 +4,12 @@
 ***
 
 ## Installation Instructions
-1. Export the desired GroupMe conversation (use the instructions [here](https://support.microsoft.com/en-us/office/how-do-i-export-my-groupme-data-1f6875bf-7871-4ade-8608-4c606cd5f518))
+1. Export the desired GroupMe conversation (use the instructions [here](https://support.microsoft.com/en-us/office/how-do-i-export-my-groupme-data-1f6875bf-7871-4ade-8608-4c606cd5f518)) and unzip it
 2. Ensure you have a recent version of [Python](https://python.org) installed
 3. Download GitHub files
-4. Enter in desired parameters (variables at the top of `parser.py`)
-5. Run `parser.py`
+4. Run `main.py`
+5. Enter settings into GUI and click `Run Parser`
+The `output.txt` file will be located in your chat export folder
 
 ***
 
@@ -26,7 +27,9 @@ Go see my [wiki](https://github.com/theTrueEnder/GroupMe-Export-Parser/wiki)! Gr
 - Events
 - Optional system messages
 - PDF Export
-- PySimpleGUI and PyInstaller
+- HTML Export
+- Better GUI design
+- PyInstaller
 - Single User Export
 
 ***
@@ -41,6 +44,6 @@ Q: What version(s) of Python does this run on?
 
 - A: I haven't done testing, but it should work on 3.7+? I'm running on 3.10, so versions close to that should be fine. 2.X will not function.
 
-Q: Are there plans to make this portable (i.e. an executable & GUI)?
+Q: Are there plans to make this portable (i.e. an executable)?
 
 - A: Yes! This is very high on my to-do. 
