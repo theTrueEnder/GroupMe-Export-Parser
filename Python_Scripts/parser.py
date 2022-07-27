@@ -8,20 +8,29 @@ TODO
 
 '''
 
-'''PARAMETERS'''
-GROUPME_FILE_PATH = 'GroupMe Parser\\Groupme_Honors\\'
-REVERSED = True
-USE_NICKNAMES = False
-ENABLE_SYSTEM_MESSAGES = True
-'''END PARAMETERS'''
+'''PARAMETERS
+{
+    "user_data_folder": "", 
+    "reversed": "True",
+    "nicknames": "False",
+    "enable_system_messages": "True",
+    "enable_images": "True",
+    "enable_files": "True",
+    "enable_replies": "True",
+    "use_local_files": "True",
+    "export_type": "txt",
+    "split_type": "none"
+}
+END PARAMETERS'''
 
 import json
 import msg_unit as msg_unit
 import conversation as conversation
-import os
+from datetime import datetime
 
 
 
+REVERSED = None
 
 # Remove bad characters created from encoding conversion
 def clean_text(dirty):
@@ -47,7 +56,17 @@ def add_msg(msg_list, msg):
         msg_list.append(msg)
     return msg_list
 
-def run():
+def run(settings):
+    settings["user_data_folder"] 
+    REVERSED = settings["reversed"]
+    settings["nicknames"]
+    settings["enable_system_messages"]
+    #settings["enable_images"]
+    #settings["enable_files"]
+    #settings["enable_replies"]
+    #settings["use_local_files"]
+    #settings["export_type"]
+    #settings["split_type"]
     '''
     get conversation json data
     parse conversation to get conversation metadata and user list
@@ -64,13 +83,13 @@ def run():
     '''
     #get conversation json data
     print('Opening conversation file...')
-    with open(GROUPME_FILE_PATH + 'conversation.json', 'r') as f:
+    with open(settings["user_data_folder"]  + 'conversation.json', 'r') as f:
         raw_cvn = json.load(f)
     
 
     #get message json data
     print('Opening message file...')
-    with open(GROUPME_FILE_PATH + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
+    with open(settings["user_data_folder"]  + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
         raw_msgs = json.load(f)
     
 
