@@ -95,11 +95,11 @@ def run():
     for msg in dict_msg: # get names/nicknames of users instead of ID numbers
         temp_member = cvn.get_member_by_id(msg['sender'])
         if temp_member is not None:
-            if USE_NICKNAMES:
+            if settings["nicknames"]:
                 msg['sender'] = temp_member.nickname
             else:
                 msg['sender'] = temp_member.name
-        if ENABLE_SYSTEM_MESSAGES:
+        if settings["enable_system_messages"]:
             s.append([ #this is the message format, for customization see here
                 msg["sender"], 
                 f' at {msg["time"]}: ', 
@@ -122,11 +122,25 @@ def run():
     msg_export = clean_text(msg_export)
 
     #write message list to output file
-    print(f'Writing output to {GROUPME_FILE_PATH}output.txt...')
-    with open(GROUPME_FILE_PATH + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
+    print(f'Writing output to {settings["user_data_folder"] }output.txt...')
+    with open(settings["user_data_folder"]  + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
+        f.write("Compiled at: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\n\n')
         f.write(cvn_export+'\n')        
         f.write(msg_export)
         
     print('Program complete.')
 
-run()
+
+tmp_settings = {
+    "user_data_folder": "GroupMe Parser/Groupme_Honors/", 
+    "reversed": "True",
+    "nicknames": "False",
+    "enable_system_messages": "True",
+    "enable_images": "True",
+    "enable_files": "True",
+    "enable_replies": "True",
+    "use_local_files": "True",
+    "export_type": "txt",
+    "split_type": "none"
+}
+run(tmp_settings)
