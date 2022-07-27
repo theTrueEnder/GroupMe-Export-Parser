@@ -4,10 +4,11 @@
 ***
 
 ## Installation Instructions
-1. Ensure you have a recent version of [Python](https://python.org) installed
-2. Download GitHub files
-3. Enter in parameters (variables at the top of `parser.py`
-4. Run
+1. Export the desired GroupMe conversation (use the instructions [here](https://support.microsoft.com/en-us/office/how-do-i-export-my-groupme-data-1f6875bf-7871-4ade-8608-4c606cd5f518))
+2. Ensure you have a recent version of [Python](https://python.org) installed
+3. Download GitHub files
+4. Enter in desired parameters (variables at the top of `parser.py`)
+5. Run `parser.py`
 
 ***
 
