@@ -47,3 +47,10 @@ Q: What version(s) of Python does this run on?
 Q: Are there plans to make this portable (i.e. an executable)?
 
 - A: Yes! This is very high on my to-do. 
+
+***
+
+## Known Errors
+
+- Deleted/Exited users' id showing instead of name/nickname
+- GroupMe emoji not transferring
