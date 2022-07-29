@@ -57,7 +57,8 @@ def add_msg(msg_list, msg):
     return msg_list
 
 def run(settings):
-    settings["user_data_folder"] += '\\'
+    if settings["user_data_folder"][-1] != '/':
+        settings["user_data_folder"] += '/'
     REVERSED = settings["reversed"]
     settings["nicknames"]
     settings["enable_system_messages"]
@@ -83,31 +84,48 @@ def run(settings):
     '''
     #get conversation json data
     print('Opening conversation file...')
-    with open(settings["user_data_folder"]  + 'conversation.json', 'r') as f:
-        raw_cvn = json.load(f)
-    
+    try:
+        with open(settings["user_data_folder"]  + 'conversation.json', 'r') as f:
+            raw_cvn = json.load(f)
+    except:
+        print('Error opening conversation.json')
+        return
 
-    #get message json data
-    print('Opening message file...')
-    with open(settings["user_data_folder"]  + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
-        raw_msgs = json.load(f)
-    
-
-    #parse conversation to get conversation metadata and user list
-    print('Parsing files...')
+    print('Parsing conversation...')
     cvn = conversation.conversation()
     cvn.parse(raw_cvn)
+    cvn_export = cvn.export()
+    cvn_export = clean_text(cvn_export)
+    print(f'Writing conversation export to {settings["user_data_folder"] }output.txt...')
+    try:
+        with open(settings["user_data_folder"]  + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
+            f.write("Compiled at: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\n\n')
+            f.write(cvn_export+'\n')  
+    except:
+        print('Error writing conversation output file.')
+        return
+
+
+    #get message json data
+    try:
+        print('Opening message file...')
+        with open(settings["user_data_folder"]  + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
+            raw_msgs = json.load(f)
+    except:
+        print('Error opening message.json')
+        return
+
+    #parse conversation to get conversation metadata and user list
+    print('Parsing messages...')
     msgs = []
     for msg in raw_msgs:
         tmp_msg = msg_unit.msg_unit()
         tmp_msg.parse(msg)
         msgs.append(tmp_msg)
 
-
-    #format the conversation and message data for export
+    #format message data for export
     print('Formatting data...')
-    cvn_export = cvn.export()
-    msg_export = '\n'.join([msg.s_simple_export() for msg in msgs])
+    #msg_export = '\n'.join([msg.s_simple_export() for msg in msgs])
     dict_msg = [msg.simple_export() for msg in msgs]
     s = []
 
@@ -136,22 +154,22 @@ def run(settings):
         concat_msgs = add_msg(concat_msgs, '\n')
 
     msg_export = ''.join(concat_msgs)
-    
-    cvn_export = clean_text(cvn_export)
     msg_export = clean_text(msg_export)
 
     #write message list to output file
     print(f'Writing output to {settings["user_data_folder"] }output.txt...')
-    with open(settings["user_data_folder"]  + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
-        f.write("Compiled at: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\n\n')
-        f.write(cvn_export+'\n')        
-        f.write(msg_export)
-        
+    try:
+        with open(settings["user_data_folder"]  + 'output.txt', 'a', encoding='utf-8', errors='ignore') as f:        
+            f.write(msg_export)
+    except:
+        print('Error writing output file.')
+        return
+
     print('Program complete.')
 
 
 tmp_settings = {
-    "user_data_folder": "GroupMe Parser/Groupme_Honors/", 
+    "user_data_folder": "~/Groupme_Honors/", 
     "reversed": "True",
     "nicknames": "False",
     "enable_system_messages": "True",

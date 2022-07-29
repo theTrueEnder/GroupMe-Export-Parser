@@ -164,6 +164,7 @@ def main():
                 window.close()
                 window = None
                 save_settings(SETTINGS_FILE, settings, values)
+                sg.popup('Messages parsed successfully')
         if event == 'Run Parser':
             run_parser(settings)
             break
