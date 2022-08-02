@@ -34,31 +34,18 @@ class attachment():
 
     def image(self, attachments):
         self.image_url = attachments['url']
-        if self.image_url == None:
-            print('Bad image')
-        else:
-            pass
-            #print('Good image', self.image_url)
-
-        '''
-        try:
-            i = [x.isdigit() for x in self.image_url].index(True)
-        except:
-            print(f'Image Error: "{self.image_url}" is not a valid ' + attachments['type'] + ' url')
-            self.image_url = 'https://imgs.search.brave.com/4vMvrshEmayMwfpUjotgeYpsv9FuSInGyMZWQUR8Uhs/rs:fit:150:172:1/g:ce/aHR0cHM6Ly92aWdu/ZXR0ZTIud2lraWEu/bm9jb29raWUubmV0/L2xvZ29wZWRpYS9p/bWFnZXMvNS81Yi9H/cm91cE1lMjAxMi5w/bmcvcmV2aXNpb24v/bGF0ZXN0L3NjYWxl/LXRvLXdpZHRoLWRv/d24vMTUwP2NiPTIw/MTUwNjE0MjAwMTMx'
+        if self.image_url is None: # if no profile image, use groupme logo (from logo fandom website)
+            self.image_url = 'https://logos.fandom.com/wiki/File:GroupMeAppIcon.png'
             self.width = '150'
-            self.height = '172'
+            self.height = '150'
             self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;'
-            return
-
-        i2 = self.image_url.index('.', i)
-        temp = self.image_url[i:i2]
-        self.width = temp[:temp.index('x')]
-        self.height = temp[temp.index('x')+1:]
-        self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;'
-        '''
-
-
+        else:
+            i = [x.isdigit() for x in self.image_url].index(True)
+            i2 = self.image_url.index('.', i)
+            temp = self.image_url[i:i2]
+            self.width = temp[:temp.index('x')]
+            self.height = temp[temp.index('x')+1:]
+            self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;'
 
     def image_edited(self, attachments):
         self.image_url = attachments['url']

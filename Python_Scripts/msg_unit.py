@@ -257,7 +257,7 @@ class msg_unit():
         self._created_at = json['created_at']
         self._favorited_by = json['favorited_by']
 
-        #self._avatar_image = attachments.attachment({'type': 'image', 'url': self._avatar_url})
+        self._avatar_image = attachments.attachment({'type': 'image', 'url': self._avatar_url})
         if json['attachments'] is not None:
             for a in json['attachments']:
                 if(a['type'] == 'image' and a['url'] is  None):
