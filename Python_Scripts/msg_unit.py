@@ -42,6 +42,7 @@ class msg_unit():
         self._avatar_image = None
         self._attachments = []
         self._events = []
+        self._favorite_count = 0
 
         self.time = None
 
@@ -229,7 +230,18 @@ class msg_unit():
     def events(self):
         del self._events
     
-    
+    ''' FAVORITE COUNT'''
+    @property
+    def favorite_count(self):
+        return self._favorite_count
+    @favorite_count.setter
+    def favorite_count(self, value):
+        self._favorite_count = value
+    @favorite_count.deleter
+    def favorite_count(self):
+        del self._favorite_count
+
+
     def parse(self, json):
         self._avatar_url = json['avatar_url']
         self._group_id = json['group_id']
@@ -250,6 +262,7 @@ class msg_unit():
             self._attachments.append(attachments.attachment(a))
         for e in json['events']:
             self._events.append(events.event(e))
+        self._favorite_count = len(self._favorited_by)
 
         self.time = unix_to_dt(self.created_at)
 

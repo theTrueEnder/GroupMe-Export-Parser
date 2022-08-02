@@ -1,6 +1,20 @@
 import html
 import webbrowser
 
+html_text = '''
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GroupMe Conversation Export</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        XXX
+    </body>
+</html>
+            '''
 def string_to_html(string):
     string.replace('\n', '<br>')
     return html.escape(string, quote=True)
@@ -16,9 +30,17 @@ def video_to_html(video):
             </video>
             '''
 
+def add(text):
+    i = html_text.index('</body>') - 5
+    html_text = html_text[:i] + text + html_text[i:]
+
+def convert(msgs, filepath):
+    ...
+    with open(filepath, 'w') as f:
+        f.write(html)
+
 
 # image url:            "https://i.groupme.com/1242x2688.jpeg.80f237141d2c4ea5b24f2aab258c74af"
-
 # video url:            "https://v.groupme.com/70094573/2022-05-05T17:17:04Z/7b6441f.1920x1080r90.mp4"
 # video preview url:    "https://v.groupme.com/70094573/2022-05-05T17:17:04Z/7b6441f.1920x1080r90.jpg"
 

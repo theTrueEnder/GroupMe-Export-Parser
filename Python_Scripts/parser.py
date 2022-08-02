@@ -27,7 +27,7 @@ import json
 import msg_unit as msg_unit
 import conversation as conversation
 from datetime import datetime
-
+import html_converter
 
 
 REVERSED = None
@@ -66,7 +66,7 @@ def run(settings):
     #settings["enable_files"]
     #settings["enable_replies"]
     #settings["use_local_files"]
-    #settings["export_type"]
+    settings["export_type"]
     #settings["split_type"]
     '''
     get conversation json data
@@ -165,7 +165,23 @@ def run(settings):
         print('Error writing output file.')
         return
 
-    print('Program complete.')
+    print('Parser complete.')
+
+    if settings["export_type"] == 'txt':
+        print('Exporting to .txt...')
+        #try:
+        #    with open(settings["user_data_folder"]  + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
+        #        f.write(msg_export)
+        #except:
+        #    print('Error writing output file.')
+        #    return
+    elif settings["export_type"] == 'html':
+        print('Exporting to .html...')
+        try:
+            html_converter.convert(msgs, settings["user_data_folder"]  + 'output.html') # this includes system messages even if they are disabled
+        except:
+            print('Error writing output file.')
+            return
 
 
 tmp_settings = {
