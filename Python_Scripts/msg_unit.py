@@ -1,6 +1,10 @@
+import attachments
+import events
+
 from datetime import datetime
 def unix_to_dt(time):
     return datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
+
 
 # Remove bad characters created from encoding conversion
 def clean_text(dirty):
@@ -34,6 +38,10 @@ class msg_unit():
         self._platform = None
         self._created_at = None
         self._favorited_by = []
+
+        self._avatar_image = None
+        self._attachments = []
+        self._events = []
 
         self.time = None
 
@@ -187,6 +195,40 @@ class msg_unit():
     @favorited_by.deleter
     def favorited_by(self):
         del self._favorited_by
+
+    ''' AVATAR IMAGE'''
+    @property
+    def avatar_image(self):
+        return self._avatar_image
+    @avatar_image.setter
+    def avatar_image(self, value):
+        self._avatar_image = value
+    @avatar_image.deleter
+    def avatar_image(self):
+        del self._avatar_image
+
+    ''' ATTACHMENTS '''
+    @property
+    def attachments(self):
+        return self._attachments
+    @attachments.setter
+    def attachments(self, value):
+        self._attachments = value
+    @attachments.deleter
+    def attachments(self):
+        del self._attachments
+    
+    ''' EVENTS '''
+    @property
+    def events(self):
+        return self._events
+    @events.setter
+    def events(self, value):
+        self._events = value
+    @events.deleter
+    def events(self):
+        del self._events
+    
     
     def parse(self, json):
         self._avatar_url = json['avatar_url']
@@ -202,6 +244,12 @@ class msg_unit():
         self._platform = json['platform']
         self._created_at = json['created_at']
         self._favorited_by = json['favorited_by']
+
+        self._avatar_image = attachments.attachment({'type': 'image', 'url': self._avatar_url})
+        for a in json['attachments']:
+            self._attachments.append(attachments.attachment(a))
+        for e in json['events']:
+            self._events.append(events.event(e))
 
         self.time = unix_to_dt(self.created_at)
 
@@ -222,3 +270,9 @@ class msg_unit():
     def __str__(self):
         s = self.name + " at " + unix_to_dt(self.createdt) + ": " + self.text
         print(f"${s:20}")
+
+    def get_attachments(self):
+        return self._attachments
+
+    def get_events(self):
+        return self._events

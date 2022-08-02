@@ -1,6 +1,6 @@
 EMOJI_PLACEHOLDER = '?'
 
-class attachments():
+class attachment():
     def __init__(self, attachments):
         self.type = attachments['type']
         self.empty = False
@@ -34,14 +34,40 @@ class attachments():
 
     def image(self, attachments):
         self.image_url = attachments['url']
+        i = [x.isdigit() for x in self.image_url].index(True)
+        i2 = self.image_url.index('.', i)
+        temp = self.image_url[i:i2]
+        self.width = temp[:temp.index('x')]
+        self.height = temp[temp.index('x')+1:]
+        self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;'
 
     def image_edited(self, attachments):
         self.image_url = attachments['url']
         self.url = attachments['source_url']
+        i = [x.isdigit() for x in self.image_url].index(True)
+        i2 = self.image_url.index('.', i)
+        temp = self.image_url[i:i2]
+        self.width = temp[:temp.index('x')]
+        self.height = temp[temp.index('x')+1:]
+        self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;'
 
     def video(self, attachments):
         self.url = attachments['url']
+        i = self.url[:-4].rindex('.') + 1
+        i2 = self.url.rindex('.') - 1
+        temp = self.url[i:i2]
+        self.video_width = temp[:temp.index('x')]
+        self.video_height = temp[temp.index('x')+1 : temp.index('r')]
+        self.resolution = temp[temp.index('r')+1:]
+
         self.preview_url = attachments['preview_url']
+        i = self.preview_url[:-4].rindex('.') + 1
+        i2 = self.preview_url.rindex('.') - 1
+        temp = self.preview_url[i:i2]
+        self.width = temp[:temp.index('x')]
+        self.height = temp[temp.index('x')+1 : temp.index('r')]
+        self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;' 
+
 
     def emoji(self, attachments):
         self.placeholder = EMOJI_PLACEHOLDER
