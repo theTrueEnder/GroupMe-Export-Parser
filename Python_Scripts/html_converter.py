@@ -5,6 +5,18 @@ def string_to_html(string):
     string.replace('\n', '<br>')
     return html.escape(string, quote=True)
 
+def image_to_html(image):
+    return f'<img src="{image.url}" style="{image.style}">'
+
+def video_to_html(video):
+    return f'''
+            <video width="{video.video_width}" height="{video.video_height}" controls>
+                <source src="{video.url}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            '''
+
+
 # image url:            "https://i.groupme.com/1242x2688.jpeg.80f237141d2c4ea5b24f2aab258c74af"
 
 # video url:            "https://v.groupme.com/70094573/2022-05-05T17:17:04Z/7b6441f.1920x1080r90.mp4"
