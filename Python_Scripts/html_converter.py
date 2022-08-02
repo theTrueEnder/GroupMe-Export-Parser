@@ -14,7 +14,8 @@ html_text = '''
         XXX
     </body>
 </html>
-            '''
+'''
+
 def string_to_html(string):
     string.replace('\n', '<br>')
     return html.escape(string, quote=True)
@@ -29,6 +30,10 @@ def video_to_html(video):
                 Your browser does not support the video tag.
             </video>
             '''
+
+def file_to_html(file):
+    ...
+
 
 def add(text):
     i = html_text.index('</body>') - 5

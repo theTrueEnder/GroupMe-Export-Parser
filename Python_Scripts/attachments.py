@@ -34,12 +34,31 @@ class attachment():
 
     def image(self, attachments):
         self.image_url = attachments['url']
-        i = [x.isdigit() for x in self.image_url].index(True)
+        if self.image_url == None:
+            print('Bad image')
+        else:
+            pass
+            #print('Good image', self.image_url)
+
+        '''
+        try:
+            i = [x.isdigit() for x in self.image_url].index(True)
+        except:
+            print(f'Image Error: "{self.image_url}" is not a valid ' + attachments['type'] + ' url')
+            self.image_url = 'https://imgs.search.brave.com/4vMvrshEmayMwfpUjotgeYpsv9FuSInGyMZWQUR8Uhs/rs:fit:150:172:1/g:ce/aHR0cHM6Ly92aWdu/ZXR0ZTIud2lraWEu/bm9jb29raWUubmV0/L2xvZ29wZWRpYS9p/bWFnZXMvNS81Yi9H/cm91cE1lMjAxMi5w/bmcvcmV2aXNpb24v/bGF0ZXN0L3NjYWxl/LXRvLXdpZHRoLWRv/d24vMTUwP2NiPTIw/MTUwNjE0MjAwMTMx'
+            self.width = '150'
+            self.height = '172'
+            self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;'
+            return
+
         i2 = self.image_url.index('.', i)
         temp = self.image_url[i:i2]
         self.width = temp[:temp.index('x')]
         self.height = temp[temp.index('x')+1:]
         self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;'
+        '''
+
+
 
     def image_edited(self, attachments):
         self.image_url = attachments['url']
@@ -54,19 +73,22 @@ class attachment():
     def video(self, attachments):
         self.url = attachments['url']
         i = self.url[:-4].rindex('.') + 1
-        i2 = self.url.rindex('.') - 1
+        i2 = self.url.rindex('.')
         temp = self.url[i:i2]
         self.video_width = temp[:temp.index('x')]
         self.video_height = temp[temp.index('x')+1 : temp.index('r')]
-        self.resolution = temp[temp.index('r')+1:]
+        try:
+            self.resolution = temp[temp.index('r')+1:]
+        except:
+            self.resolution = 'N/A'
 
         self.preview_url = attachments['preview_url']
         i = self.preview_url[:-4].rindex('.') + 1
-        i2 = self.preview_url.rindex('.') - 1
+        i2 = self.preview_url.rindex('.')
         temp = self.preview_url[i:i2]
         self.width = temp[:temp.index('x')]
         self.height = temp[temp.index('x')+1 : temp.index('r')]
-        self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;' 
+        self.style = 'width: ' + self.width + 'px; height: ' + self.height + 'px;'
 
 
     def emoji(self, attachments):

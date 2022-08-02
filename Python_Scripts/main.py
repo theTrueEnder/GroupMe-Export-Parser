@@ -83,7 +83,7 @@ def load_settings(settings_file, default_settings):
         with open(settings_file, 'r') as f:
             settings = jsonload(f)
     except Exception as e:
-        sg.popup_quick_message(f'exception {e}', 'No settings file found... will create one for you', keep_on_top=True, background_color='red', text_color='white')
+        sg.popup_quick_message(f'exception {e}', 'No settings file found... will create one for you', keep_on_top=True)
         settings = default_settings
         save_settings(settings_file, settings, None)
     return settings
@@ -96,6 +96,7 @@ def save_settings(settings_file, settings, values):
                 settings[key] = values[SETTINGS_KEYS_TO_ELEMENT_KEYS[key]]
             except Exception as e:
                 print(f'Problem updating settings from window values. Key = {key}')
+                sg.popup(f'Problem updating settings from window values. Key = {key}', background_color='red', text_color='white')
 
     with open(settings_file, 'w') as f:
         jsondump(settings, f)
@@ -133,6 +134,7 @@ def create_settings_window(settings):
             window[SETTINGS_KEYS_TO_ELEMENT_KEYS[key]].update(value=settings[key])
         except Exception as e:
             print(f'Problem updating PySimpleGUI window from settings. Key = {key}')
+            sg.popup(f'Problem updating PySimpleGUI window from settings. Key = {key}', background_color='red', text_color='white')
 
     return window
 
@@ -164,9 +166,14 @@ def main():
                 window.close()
                 window = None
                 save_settings(SETTINGS_FILE, settings, values)
-                sg.popup('Messages parsed successfully')
+                
         if event == 'Run Parser':
-            run_parser(settings)
+            m = run_parser(settings)
+            if m == 'Messages parsed successfully':
+                sg.popup('Messages parsed successfully')
+            else:
+                #sg.popup('Completion error: ' + m, background_color='red', text_color='white')
+                pass
             break
     window.close()
 main()

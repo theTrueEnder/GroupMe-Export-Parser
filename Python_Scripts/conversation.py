@@ -1,11 +1,27 @@
+# Remove bad characters created from encoding conversion
+def clean_text(dirty):
+    if dirty is not None:
+        if "´" or "’" or "`" or "�" or "“" or "”" or '\u202c' or '\u202d' in dirty:
+            clean = dirty
+            clean = clean.replace("´", "'")
+            clean = clean.replace("’", "'")
+            clean = clean.replace("`", "'")
+            clean = clean.replace("�", '<emoji>')
+            clean = clean.replace("“", '"')
+            clean = clean.replace("”", '"')
+            clean = clean.replace('\u202c', '')
+            clean = clean.replace('\u202d', '')
+        return clean
+    else:
+        return None
 
 class user:
   def __init__(self, userid, nickname, avatarurl, id, name):
       self._user_id = userid
-      self._nickname = nickname
+      self._nickname = clean_text(nickname)
       self._avatar_url = avatarurl
       self._id = id
-      self._name = name
+      self._name = clean_text(name)
 
   ''' NICKNAME '''
   @property
@@ -73,8 +89,8 @@ class conversation:
   def parse(self, json):
     self.id =           json['id']
     self.group_id =     json['group_id']
-    self.name =         json['name']
-    self.description =  json['description']
+    self.name =         clean_text(json['name'])
+    self.description =  clean_text(json['description'])
     self.image_url =    json['image_url']
     self.created_at =   json['created_at']
     self.msg_count =    json['messages']['count']

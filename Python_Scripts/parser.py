@@ -68,42 +68,29 @@ def run(settings):
     #settings["use_local_files"]
     settings["export_type"]
     #settings["split_type"]
-    '''
-    get conversation json data
-    parse conversation to get conversation metadata and user list
-    write conversation metadata to output file
-    delete conversation
 
-    get message json data
-    parse message to get message list
-    write message list to output file
-        #get images and add into output file
-    delete message list
-    
-    
-    '''
     #get conversation json data
     print('Opening conversation file...')
     try:
-        with open(settings["user_data_folder"]  + 'conversation.json', 'r') as f:
+        with open(settings["user_data_folder"]  + 'conversation.json', 'r', errors='ignore') as f:
             raw_cvn = json.load(f)
-    except:
-        print('Error opening conversation.json')
-        return
+    except Exception as e:
+        print('Error opening conversation.json: ' + str(e))
+        return 'Error opening conversation.json: ' + str(e)
 
     print('Parsing conversation...')
     cvn = conversation.conversation()
     cvn.parse(raw_cvn)
     cvn_export = cvn.export()
-    cvn_export = clean_text(cvn_export)
+    # cvn_export = clean_text(cvn_export) #############################################################################################################################################################
     print(f'Writing conversation export to {settings["user_data_folder"] }output.txt...')
     try:
         with open(settings["user_data_folder"]  + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
             f.write("Compiled at: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\n\n')
             f.write(cvn_export+'\n')  
-    except:
-        print('Error writing conversation output file.')
-        return
+    except Exception as e:
+        print('Error writing conversation to file: ' + str(e))
+        return 'Error writing conversation to file: ' + str(e)
 
 
     #get message json data
@@ -111,9 +98,9 @@ def run(settings):
         print('Opening message file...')
         with open(settings["user_data_folder"]  + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
             raw_msgs = json.load(f)
-    except:
-        print('Error opening message.json')
-        return
+    except Exception as e:
+        print('Error opening message.json: ' + str(e))
+        return 'Error opening message.json: ' + str(e)
 
     #parse conversation to get conversation metadata and user list
     print('Parsing messages...')
@@ -121,7 +108,8 @@ def run(settings):
     for msg in raw_msgs:
         tmp_msg = msg_unit.msg_unit()
         tmp_msg.parse(msg)
-        msgs.append(tmp_msg)
+        if settings["enable_system_messages"] or tmp_msg.type != 'system':
+            msgs.append(tmp_msg)
 
     #format message data for export
     print('Formatting data...')
@@ -136,13 +124,12 @@ def run(settings):
                 msg['sender'] = temp_member.nickname
             else:
                 msg['sender'] = temp_member.name
-        if settings["enable_system_messages"]:
             s.append([ #this is the message format, for customization see here
                 msg["sender"], 
                 f' at {msg["time"]}: ', 
                 msg["message"]
             ])
-    
+     
     concat_msgs = []
     for msg in s:
         for part in msg:
@@ -154,16 +141,16 @@ def run(settings):
         concat_msgs = add_msg(concat_msgs, '\n')
 
     msg_export = ''.join(concat_msgs)
-    msg_export = clean_text(msg_export)
+    #msg_export = clean_text(msg_export) ##################################################################################################################################################
 
     #write message list to output file
-    print(f'Writing output to {settings["user_data_folder"] }output.txt...')
+    print(f'Writing output to {settings["user_data_folder"]}output.txt...')
     try:
         with open(settings["user_data_folder"]  + 'output.txt', 'a', encoding='utf-8', errors='ignore') as f:        
             f.write(msg_export)
-    except:
-        print('Error writing output file.')
-        return
+    except Exception as e:
+        print('Error writing messages to output file: ' + str(e))
+        return 'Error writing messages to output file: ' + str(e)
 
     print('Parser complete.')
 
@@ -179,9 +166,12 @@ def run(settings):
         print('Exporting to .html...')
         try:
             html_converter.convert(msgs, settings["user_data_folder"]  + 'output.html') # this includes system messages even if they are disabled
-        except:
-            print('Error writing output file.')
-            return
+        except Exception as e:
+            print('Error writing messages to html file: ' + str(e))
+            return 'Error writing messages to html file: ' + str(e)
+    
+    print('Messages parsed successfully')
+    return 'Messages parsed successfully'
 
 
 tmp_settings = {

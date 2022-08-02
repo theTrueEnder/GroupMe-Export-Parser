@@ -257,11 +257,15 @@ class msg_unit():
         self._created_at = json['created_at']
         self._favorited_by = json['favorited_by']
 
-        self._avatar_image = attachments.attachment({'type': 'image', 'url': self._avatar_url})
-        for a in json['attachments']:
-            self._attachments.append(attachments.attachment(a))
-        for e in json['events']:
-            self._events.append(events.event(e))
+        #self._avatar_image = attachments.attachment({'type': 'image', 'url': self._avatar_url})
+        if json['attachments'] is not None:
+            for a in json['attachments']:
+                if(a['type'] == 'image' and a['url'] is  None):
+                    print("Error: image attachment has no url", self.msg_id)
+                self._attachments.append(attachments.attachment(a))
+        if 'events' in json and json['events'] is not None:
+            for e in json['events']:
+                self._events.append(events.event(e))
         self._favorite_count = len(self._favorited_by)
 
         self.time = unix_to_dt(self.created_at)
