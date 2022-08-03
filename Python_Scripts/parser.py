@@ -165,7 +165,7 @@ def run(settings):
     elif settings["export_type"] == 'html':
         print('Exporting to .html...')
         try:
-            html_converter.convert(msgs, settings["user_data_folder"]  + 'output.html') # this includes system messages even if they are disabled
+            html_converter.convert(msgs, settings, settings["user_data_folder"]) # this includes system messages even if they are disabled
         except Exception as e:
             print('Error writing messages to html file: ' + str(e))
             return 'Error writing messages to html file: ' + str(e)
