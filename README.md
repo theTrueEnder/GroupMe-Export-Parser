@@ -2,6 +2,16 @@
  An easy parser to access the data you want from the giant data dump that the GroupMe export function gives you.
 
 ***
+## Features:
+
+- Simple to run with the included .exe
+- GUI
+- Optional system messages
+- Nickname/Name toggle
+- Reversable time ordering
+- Export to .txt file
+- Open code design and wiki to easily make your own version or adjustments
+
 
 ## Installation Instructions
 1. Export the desired GroupMe conversation (use the instructions [here](https://support.microsoft.com/en-us/office/how-do-i-export-my-groupme-data-1f6875bf-7871-4ade-8608-4c606cd5f518)) and unzip it
@@ -21,15 +31,13 @@ Go see my [wiki](https://github.com/theTrueEnder/GroupMe-Export-Parser/wiki)! Gr
 
 ## TO-DO
 
+- HTML Export
 - Likes
 - Images
 - Attachments
 - Events
-- Optional system messages
 - PDF Export
-- HTML Export
 - Better GUI design
-- PyInstaller
 - Single User Export
 
 ***
@@ -44,9 +52,13 @@ Q: What version(s) of Python does this run on?
 
 - A: I haven't done testing, but it should work on 3.7+? I'm running on 3.10, so versions close to that should be fine. 2.X will not function.
 
-Q: Are there plans to make this portable (i.e. an executable)?
+Q: Why isn't there a PDF export?
 
-- A: Yes! This is very high on my to-do. 
+- A: PDFs are really hard to deal with. I attempted to use a couple python PDF libraries but progress was really slow, so after having the idea to use HTML instead, I've pursued that route. Theoretically you'll be able to Ctrl+P the HTML file and use that (it'll look way cleaner than the PDF ever would).
+
+Q: How much time did this take?
+
+- A: I've sunk about two working weeks into this, so hopefully you find it useful (:
 
 ***
 
@@ -54,3 +66,4 @@ Q: Are there plans to make this portable (i.e. an executable)?
 
 - Deleted/Exited users' id showing instead of name/nickname
 - GroupMe emoji not transferring
+- Error when running GUI initially
