@@ -39,6 +39,7 @@ Go see my [wiki](https://github.com/theTrueEnder/GroupMe-Export-Parser/wiki)! Gr
 - PDF Export
 - Better GUI design
 - Single User Export
+- 24/12 hr time
 
 ***
 
