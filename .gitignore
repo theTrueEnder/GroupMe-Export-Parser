@@ -6,3 +6,4 @@ Python_Scripts/settings_file.cfg
 .github/*
 .gitattributes
 .gitignore
+Python_Scripts/build/*
