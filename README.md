@@ -17,12 +17,11 @@
 1. Export the desired GroupMe conversation (use the instructions [here](https://support.microsoft.com/en-us/office/how-do-i-export-my-groupme-data-1f6875bf-7871-4ade-8608-4c606cd5f518)) and unzip it
 3. Ensure you have a recent version of [Python](https://python.org) installed
 4. Download the GroupMe-Export-Parser
-2. Move the inner unzipped folder  into the GroupMe-Export-Parser
 5. Run `main.py`
 6. Set the location of the inner unzipped folder of your export (the name should be a sequence of 8 numbers or so) in the settings menu
 7. Enter any other preferred settings into GUI
 8. Click `Run Parser`
-The `output.txt` file will be located **in your chat export folder**
+The `output.txt` file will be located ***in your chat export folder***
 
 ***
 
