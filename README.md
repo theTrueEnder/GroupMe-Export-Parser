@@ -1,10 +1,10 @@
 # GroupMe Export Parser
- An easy parser to access the data you want from the giant data dump that the GroupMe export function gives you.
+ An easy parser to access the data you want from the giant data dump that the GroupMe export gives you.
 
 ***
 ## Features:
 
-- Simple to run with the included .exe
+- Simple to run with the included .exe (may or may not work; if it doesn't, just run `main.py`)
 - GUI
 - Optional system messages
 - Nickname/Name toggle
@@ -15,11 +15,15 @@
 
 ## Installation Instructions
 1. Export the desired GroupMe conversation (use the instructions [here](https://support.microsoft.com/en-us/office/how-do-i-export-my-groupme-data-1f6875bf-7871-4ade-8608-4c606cd5f518)) and unzip it
-2. Ensure you have a recent version of [Python](https://python.org) installed
-3. Download GitHub files
-4. Run `main.py`
-5. Enter settings into GUI and click `Run Parser`
-The `output.txt` file will be located in your chat export folder
+3. Ensure you have a recent version of [Python](https://python.org) installed
+4. Download the GroupMe-Export-Parser
+5. Run `main.py`
+6. Set the location of the inner unzipped folder of your export (the name should be a sequence of 8 numbers or so) in the settings menu
+7. Enter any other preferred settings into GUI
+8. Click `Run Parser`
+
+
+The `output.txt` file will be located ***in your chat export folder***
 
 ***
 
@@ -31,6 +35,9 @@ Go see my [wiki](https://github.com/theTrueEnder/GroupMe-Export-Parser/wiki)! Gr
 
 ## TO-DO
 
+- General code cleanup
+- Make the GUIs look ok
+- Multiple export folder concatenation
 - HTML Export
 - Likes
 - Images
@@ -51,11 +58,11 @@ Q: Will there be other language translations?
 
 Q: What version(s) of Python does this run on?
 
-- A: I haven't done testing, but it should work on 3.7+? I'm running on 3.10, so versions close to that should be fine. 2.X will not function.
+- A: I haven't done testing, but it should work on 3.7+? I'm running on 3.12 (it was originally written in 3.10), so versions close to that should be fine. 2.X will not function.
 
 Q: Why isn't there a PDF export?
 
-- A: PDFs are really hard to deal with. I attempted to use a couple python PDF libraries but progress was really slow, so after having the idea to use HTML instead, I've pursued that route. Theoretically you'll be able to Ctrl+P the HTML file and use that (it'll look way cleaner than the PDF ever would).
+- A: PDFs are really hard to deal with. I attempted to use a couple python PDF libraries, but progress was really slow, so after having the idea to use HTML instead, I've pursued that route. Theoretically you'll be able to Ctrl+P the HTML file and use that (it'll look way cleaner than the PDF ever would).
 
 Q: How much time did this take?
 
@@ -66,5 +73,5 @@ Q: How much time did this take?
 ## Known Errors
 
 - Deleted/Exited users' id showing instead of name/nickname
-- GroupMe emoji not transferring
+- GroupMe emoji not transferring (they're stupid)
 - Error when running GUI initially
