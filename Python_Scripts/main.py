@@ -27,6 +27,7 @@ from os import path
 #Text-only or PDF or HTML
 #Split by num, size, or length
 '''END PARAMETERS'''
+
 '''
 {
     "user_data_folder": None, 
@@ -42,12 +43,13 @@ from os import path
 }
 '''
 
-import parser
-
+#import Python_Scripts.gmparser as gmparser
+import gmparser
 
 SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
+
 DEFAULT_SETTINGS = {
-    "user_data_folder": 'GroupMe Parser\\Groupme_Honors\\', # change to None later
+    "user_data_folder": '/', # change to None later
     "reversed": "True",
     "nicknames": "False",
     "enable_system_messages": "True",
@@ -58,6 +60,7 @@ DEFAULT_SETTINGS = {
     "export_type": "txt",
     "split_type": "none"
 }
+
 # "Map" from the settings dictionary keys to the window's element keys
 SETTINGS_KEYS_TO_ELEMENT_KEYS = {
     'user_data_folder': '-USER FOLDER-' ,
@@ -74,10 +77,10 @@ SETTINGS_KEYS_TO_ELEMENT_KEYS = {
 
 
 def run_parser(settings):
-    parser.run(settings)
+    gmparser.run(settings)
 
-
-########################################## Load/Save Settings File ##########################################
+    
+""" Load the given settings file, if it fails, return the default settings instead. """
 def load_settings(settings_file, default_settings):
     try:
         with open(settings_file, 'r') as f:
@@ -88,7 +91,7 @@ def load_settings(settings_file, default_settings):
         save_settings(settings_file, settings, None)
     return settings
 
-
+""" Save the given settings to the settings file """
 def save_settings(settings_file, settings, values):
     if values:      # if there are stuff specified by another window, fill in those values
         for key in SETTINGS_KEYS_TO_ELEMENT_KEYS:  # update window with the values read from settings file
@@ -103,10 +106,9 @@ def save_settings(settings_file, settings, values):
 
     sg.popup('Settings saved')
 
-########################################## Make a settings window ##########################################
+
+""" Create a settings window """
 def create_settings_window(settings):
-    #DarkGrey6
-    #DarkGrey11
     sg.theme('DarkGrey7')
 
     def TextLabel(text): return sg.Text(text+' ', justification='r', size=(len(text),1))
@@ -119,10 +121,10 @@ def create_settings_window(settings):
                 [TextLabel('Note: System messages include polls and user joins/exits)')],
                 [TextLabel('- - - - - - - -')],
                 [TextLabel('FOLLWING SETTINGS ARE DISABLED')],
-                [TextLabel(''),sg.Checkbox('Enable Images?', key='-IMAGES-', default=True, disabled=True)], # disabled
-                [TextLabel(''),sg.Checkbox('Enable Files?', key='-FILES-', default=True, disabled=True)], # disabled
-                [TextLabel(''),sg.Checkbox('Enable Replies?', key='-REPLIES-', default=True, disabled=True)], # disabled
-                [TextLabel(''),sg.Checkbox('Use Local Files?', key='-LOCAL-', default=True, disabled=True)], # disabled
+                [TextLabel(''),sg.Checkbox('Enable Images?',   key='-IMAGES-',  default=True, disabled=True)], # disabled
+                [TextLabel(''),sg.Checkbox('Enable Files?',    key='-FILES-',   default=True, disabled=True)], # disabled
+                [TextLabel(''),sg.Checkbox('Enable Replies?' , key='-REPLIES-', default=True, disabled=True)], # disabled
+                [TextLabel(''),sg.Checkbox('Use Local Files?', key='-LOCAL-',   default=True, disabled=True)], # disabled
                 [TextLabel('Export Type:'),sg.Combo(['txt', 'pdf', 'html'], key='-EXPORT-', default_value='txt', disabled=True)], # disabled
                 [TextLabel('Split Type:'),sg.Combo(['none', 'num', 'size', 'length'], key='-SPLIT-', default_value='none', disabled=True)], # disabled
                 [sg.Button('Save Current Settings'), sg.Button('Cancel')]  ]
@@ -138,7 +140,7 @@ def create_settings_window(settings):
 
     return window
 
-########################################## Main Program Window & Event Loop ##########################################
+""" Create the main window """
 def create_main_window(settings):
     sg.theme("DarkGrey11")
 
@@ -149,11 +151,11 @@ def create_main_window(settings):
 
     return sg.Window('Main Application', layout)
 
-
+""" Main program event loop """
 def main():
     window, settings = None, load_settings(SETTINGS_FILE, DEFAULT_SETTINGS )
 
-    while True:             # Event Loop
+    while True:
         if window is None:
             window = create_main_window(settings)
 
@@ -162,6 +164,7 @@ def main():
             break
         if event == 'Edit Settings':
             event, values = create_settings_window(settings).read(close=True)
+
             if event == 'Save Current Settings':
                 window.close()
                 window = None
@@ -176,4 +179,6 @@ def main():
                 pass
             break
     window.close()
+
+
 main()

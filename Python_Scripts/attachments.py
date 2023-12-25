@@ -1,4 +1,4 @@
-EMOJI_PLACEHOLDER = '?'
+EMOJI_PLACEHOLDER = '<emoji>'
 
 class attachment():
     def __init__(self, attachments):

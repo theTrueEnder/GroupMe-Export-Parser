@@ -28,27 +28,13 @@ import msg_unit as msg_unit
 import conversation as conversation
 from datetime import datetime
 import html_converter
+from helper import clean_text
 
 
 REVERSED = None
 
-# Remove bad characters created from encoding conversion
-def clean_text(dirty):
-    if dirty is not None:
-        if "´" or "’" or "`" or "�" or "“" or "”" or '\u202c' or '\u202d' in dirty:
-            clean = dirty
-            clean = clean.replace("´", "'")
-            clean = clean.replace("’", "'")
-            clean = clean.replace("`", "'")
-            clean = clean.replace("�", '<emoji>')
-            clean = clean.replace("“", '"')
-            clean = clean.replace("”", '"')
-            clean = clean.replace('\u202c', '')
-            clean = clean.replace('\u202d', '')
-        return clean
-    else:
-        return None
 
+""" Add a message to the message list (accounts for reversal option) """
 def add_msg(msg_list, msg):
     if REVERSED:
         msg_list.insert(0, msg)
@@ -57,8 +43,12 @@ def add_msg(msg_list, msg):
     return msg_list
 
 def run(settings):
+    # if the user data folder doesn't end in a slash, add one
     if settings["user_data_folder"][-1] != '/':
         settings["user_data_folder"] += '/'
+
+    #TODO clean up
+    # get settings
     REVERSED = settings["reversed"]
     settings["nicknames"]
     settings["enable_system_messages"]
@@ -69,7 +59,13 @@ def run(settings):
     settings["export_type"]
     #settings["split_type"]
 
-    #get conversation json data
+
+    '''
+    Get data from conversation.json, which is mostly metadata-related, and is the source of the
+    header lines in output.txt.
+    '''
+
+    # get conversation json data
     print('Opening conversation file...')
     try:
         with open(settings["user_data_folder"]  + 'conversation.json', 'r', errors='ignore') as f:
@@ -78,6 +74,7 @@ def run(settings):
         print('Error opening conversation.json: ' + str(e))
         return 'Error opening conversation.json: ' + str(e)
 
+    # parse conversation json data
     print('Parsing conversation...')
     cvn = conversation.conversation()
     cvn.parse(raw_cvn)
@@ -93,7 +90,11 @@ def run(settings):
         return 'Error writing conversation to file: ' + str(e)
 
 
-    #get message json data
+    '''
+    Get data from message.json, which is the actual content of the exported chat.
+    '''
+
+    # get message json data from file
     try:
         print('Opening message file...')
         with open(settings["user_data_folder"]  + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
@@ -102,13 +103,15 @@ def run(settings):
         print('Error opening message.json: ' + str(e))
         return 'Error opening message.json: ' + str(e)
 
-    #parse conversation to get conversation metadata and user list
+    # parse conversation to get conversation metadata and user list
     print('Parsing messages...')
     msgs = []
     for msg in raw_msgs:
         tmp_msg = msg_unit.msg_unit()
         tmp_msg.parse(msg)
-        if settings["enable_system_messages"] or tmp_msg.type != 'system':
+
+        # if message is sent by a user or if a system message and system messages are enabled, append to message list
+        if tmp_msg.senderType != 'system' or settings["enable_system_messages"]:
             msgs.append(tmp_msg)
 
     #format message data for export
@@ -117,7 +120,8 @@ def run(settings):
     dict_msg = [msg.simple_export() for msg in msgs]
     s = []
 
-    for msg in dict_msg: # get names/nicknames of users instead of ID numbers
+    # replace ID numbers with names/nicknames of users
+    for msg in dict_msg: 
         temp_member = cvn.get_member_by_id(msg['sender'])
         if temp_member is not None:
             if settings["nicknames"]:
@@ -130,20 +134,22 @@ def run(settings):
                 msg["message"]
             ])
      
+    # put all messages into one list
     concat_msgs = []
     for msg in s:
         for part in msg:
+            # if message part won't concatenate, ignore
             try:
                 part + 'teststring'
                 concat_msgs = add_msg(concat_msgs, part)
-            except: # if message part won't concatenate, ignore
+            except: 
                 continue
         concat_msgs = add_msg(concat_msgs, '\n')
 
     msg_export = ''.join(concat_msgs)
     #msg_export = clean_text(msg_export) ##################################################################################################################################################
 
-    #write message list to output file
+    # write message list to output file
     print(f'Writing output to {settings["user_data_folder"]}output.txt...')
     try:
         with open(settings["user_data_folder"]  + 'output.txt', 'a', encoding='utf-8', errors='ignore') as f:        
@@ -155,13 +161,15 @@ def run(settings):
     print('Parser complete.')
 
     if settings["export_type"] == 'txt':
-        print('Exporting to .txt...')
+        #print('Exporting to .txt...')
         #try:
         #    with open(settings["user_data_folder"]  + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
         #        f.write(msg_export)
         #except:
         #    print('Error writing output file.')
         #    return
+        pass
+
     elif settings["export_type"] == 'html':
         print('Exporting to .html...')
         try:
@@ -173,7 +181,7 @@ def run(settings):
     print('Messages parsed successfully')
     return 'Messages parsed successfully'
 
-
+# for testing purposes
 tmp_settings = {
     "user_data_folder": "~/Groupme_Honors/", 
     "reversed": "True",

@@ -72,7 +72,6 @@ class event():
         self.new_name = event_data['name']
 
     '''POLL EVENTS'''
-
     def poll_created(self, event_data):
         self.user = event_data['user'] 
         self.conversation = event_data['conversation']
