@@ -2,3 +2,7 @@
 Groupme_Honors/*
 Python_Scripts/__pycache__/*
 Python_Scripts/settings_file.cfg
+.build/*
+.github/*
+.gitattributes
+.gitignore
