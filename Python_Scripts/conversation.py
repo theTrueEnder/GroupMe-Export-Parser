@@ -17,6 +17,10 @@ class conversation:
 
     # takes in dictionary, assumes json parsing happens above
     def parse(self, json):
+        
+        
+        
+        
         self.id = json["id"]
         self.group_id = json["group_id"]
         self.name = clean_text(json["name"])
@@ -56,4 +60,5 @@ class conversation:
         s += "\n\t" + str(self.msg_count) + " messages"
         s += "\n\t" + str(len(self.members)) + " members"
         s += "\n"
+        s.replace('\\"', '\"')
         return s

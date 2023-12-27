@@ -28,8 +28,9 @@ import msg_unit as msg_unit
 import conversation as conversation
 from datetime import datetime
 import html_converter
-from helper import clean_text
-
+from helper import clean_text, get_clean_json
+import emoji
+import traceback
 
 REVERSED = None
 
@@ -44,6 +45,10 @@ def add_msg(msg_list, msg):
 
 def run(settings):
     # if the user data folder doesn't end in a slash, add one
+    if settings["user_data_folder"] is None or settings["user_data_folder"] == "":
+        print("Error: User Data Folder blank")
+        return "Error: User Data Folder blank"
+    
     if settings["user_data_folder"][-1] != '/':
         settings["user_data_folder"] += '/'
 
@@ -68,10 +73,13 @@ def run(settings):
     # get conversation json data
     print('Opening conversation file...')
     try:
-        with open(settings["user_data_folder"]  + 'conversation.json', 'r', errors='ignore') as f:
-            raw_cvn = json.load(f)
+        raw_cvn = get_clean_json(settings["user_data_folder"] + 'conversation.json')
+        # with open(settings["user_data_folder"]  + 'conversation.json', 'r', errors='ignore') as f:
+        #     # raw_cvn = json.load(f)
+        #     raw_cvn = get_clean_json(f)
     except Exception as e:
         print('Error opening conversation.json: ' + str(e))
+        traceback.print_exc()
         return 'Error opening conversation.json: ' + str(e)
 
     # parse conversation json data
@@ -97,10 +105,12 @@ def run(settings):
     # get message json data from file
     try:
         print('Opening message file...')
-        with open(settings["user_data_folder"]  + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
-            raw_msgs = json.load(f)
+        # with open(settings["user_data_folder"]  + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
+            # raw_msgs = json.load(f)
+        raw_msgs = get_clean_json(settings["user_data_folder"]  + 'message.json')
     except Exception as e:
         print('Error opening message.json: ' + str(e))
+        traceback.print_exc()
         return 'Error opening message.json: ' + str(e)
 
     # parse conversation to get conversation metadata and user list
@@ -147,6 +157,7 @@ def run(settings):
         concat_msgs = add_msg(concat_msgs, '\n')
 
     msg_export = ''.join(concat_msgs)
+    msg_export = emoji.emojize(msg_export)
     #msg_export = clean_text(msg_export) ##################################################################################################################################################
 
     # write message list to output file

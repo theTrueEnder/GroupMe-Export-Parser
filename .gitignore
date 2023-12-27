@@ -7,3 +7,4 @@ Python_Scripts/settings_file.cfg
 .gitattributes
 .gitignore
 Python_Scripts/build/*
+.vscode/launch.json
