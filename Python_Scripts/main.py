@@ -76,8 +76,6 @@ SETTINGS_KEYS_TO_ELEMENT_KEYS = {
 }
 
 
-def run_parser(settings):
-    gmparser.run(settings)
 
     
 """ Load the given settings file, if it fails, return the default settings instead. """
@@ -171,12 +169,17 @@ def main():
                 save_settings(SETTINGS_FILE, settings, values)
                 
         if event == 'Run Parser':
-            m = run_parser(settings)
-            if m == 'Messages parsed successfully':
-                sg.popup('Messages parsed successfully')
-            else:
-                #sg.popup('Completion error: ' + m, background_color='red', text_color='white')
-                pass
+            c, m = gmparser.run(settings)
+            match(c):
+                case 0:
+                    sg.popup(f'Success: {m}')
+                case 1:
+                    print(f'Read Error: {m}')
+                    sg.popup('Completion error: ' + m + ". See error-log.txt for more details.", background_color='red', text_color='white')
+                case 2:
+                    print(f'Write Error: {m}')
+                    sg.popup('Completion error: ' + m + ". See error-log.txt for more details.", background_color='red', text_color='white')
+                
             break
     window.close()
 
