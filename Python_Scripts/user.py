@@ -5,9 +5,21 @@ class user:
     def __init__(self, userid, nickname, avatarurl, id, name):
         self._user_id = userid
         self._nickname = clean_text(nickname)
+        if nickname != self._nickname:
+            print("Old: [" + nickname + "]")
+            print("New: [" + self._nickname + "]")
+        # else:
+            # print(self._nickname)
+        
         self._avatar_url = avatarurl
         self._id = id
         self._name = clean_text(name)
+        if name != self._name:
+            print("Old: [" + name + "]")
+            print("New: [" + self._name + "]")
+        # else:
+        #     pass
+        #     #print(self._name)
 
     """ NICKNAME """
 
