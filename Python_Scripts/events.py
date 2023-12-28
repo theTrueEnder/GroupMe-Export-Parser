@@ -1,8 +1,9 @@
 from datetime import datetime
+
 def unix_to_dt(time):
     return datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
 
-class event():
+class Event():
     def __init__(self, events):
         self.type = events['type']
         self.empty = False

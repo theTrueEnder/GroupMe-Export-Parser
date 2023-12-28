@@ -1,8 +1,6 @@
-from helper import clean_text
-from user import user
+from user import User
 
-
-class conversation:
+class Conversation:
     def __init__(self):
         self.id = None
         self.group_id = None
@@ -17,14 +15,10 @@ class conversation:
 
     # takes in dictionary, assumes json parsing happens above
     def parse(self, json):
-        
-        
-        
-        
         self.id = json["id"]
         self.group_id = json["group_id"]
-        self.name = clean_text(json["name"])
-        self.description = clean_text(json["description"])
+        self.name = json["name"]
+        self.description = json["description"]
         self.image_url = json["image_url"]
         self.created_at = json["created_at"]
         self.msg_count = json["messages"]["count"]
@@ -34,7 +28,7 @@ class conversation:
 
         for member in member_list:
             self.members.append(
-                user(
+                User(
                     member["user_id"],
                     member["nickname"],
                     member["image_url"],
@@ -44,7 +38,6 @@ class conversation:
             )
 
     """ Return a user object given their user_id """
-
     def get_member_by_id(self, user_id):
         for member in self.members:
             if member.user_id == user_id:
@@ -52,7 +45,6 @@ class conversation:
         return None
 
     """ Return conversation data as a string """
-
     def export(self):
         s = "Group:       " + self.name
         s += "\nDescription: " + self.description

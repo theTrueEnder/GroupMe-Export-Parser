@@ -1,6 +1,6 @@
 EMOJI_PLACEHOLDER = '<emoji>'
 
-class attachment():
+class Attachment():
     def __init__(self, attachments):
         self.type = attachments['type']
         self.empty = False

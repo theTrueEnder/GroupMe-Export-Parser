@@ -24,16 +24,21 @@ TODO
 END PARAMETERS'''
 
 import json
-import msg_unit as msg_unit
-import conversation as conversation
+import msg_unit
+from conversation import Conversation
 from datetime import datetime
 import html_converter
-from helper import clean_text, get_clean_json
+from helper import clean_text, get_clean_json, write_to_error_log
 import emoji
 import traceback
 
 REVERSED = None
 
+
+def throw_error(code, message, traceback_msg):
+    print(message)
+    write_to_error_log(traceback_msg)
+    return (code, message)
 
 """ Add a message to the message list (accounts for reversal option) """
 def add_msg(msg_list, msg):
@@ -71,50 +76,42 @@ def run(settings):
     '''
 
     # get conversation json data from file
-    print('Opening conversation file... @', settings["user_data_folder"]+"conversation.json")
+    print('Opening and cleaning conversation file...')
     try:
         raw_cvn = get_clean_json(settings["user_data_folder"] + 'conversation.json')
     except Exception as e:
-        print('Error opening conversation.json: ' + str(e))
-        with open('error-log.txt', 'w') as f:
-            f.write(traceback.format_exc())
-        return 'Failed to open conversation.json: ' + str(e)
-
+        emsg = 'Failed to open conversation.json: ' + str(e)
+        return throw_error(1, emsg, traceback.format_exc())
+        
 
     # parse conversation json data
     print('Parsing conversation...')
-    cvn = conversation.conversation()
+    cvn = Conversation()
     cvn.parse(raw_cvn)
     cvn_export = cvn.export()
     
     
     # write conversation data to the output file
-    print(f'Writing conversation export to {settings["user_data_folder"] }output.txt...')
+    print('Writing conversation export...')
     try:
         with open(settings["user_data_folder"]  + 'output.txt', 'w', encoding='utf-8', errors='ignore') as f:
             f.write("Compiled at: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\n\n')
             f.write(cvn_export+'\n')  
     except Exception as e:
-        print('Error writing conversation to file: ' + str(e))
-        with open('error-log.txt', 'w') as f:
-            f.write(traceback.format_exc())
-        return (2, 'Failed writing conversation to file: ' + str(e))
-
+        emsg = 'Failed writing conversation to file: ' + str(e)
+        return throw_error(2, emsg, traceback.format_exc())
+    
 
 
     ''' Get data from message.json, which is the actual content of the exported chat. '''
 
     # get message json data from file
+    print('Opening and cleaning message file...(this may take a moment)')
     try:
-        print('Opening message file...')
-        # with open(settings["user_data_folder"]  + 'message.json', 'r', encoding='utf-8', errors='ignore') as f:
-            # raw_msgs = json.load(f)
         raw_msgs = get_clean_json(settings["user_data_folder"]  + 'message.json')
     except Exception as e:
-        print('Error opening message.json: ' + str(e))
-        with open('error-log.txt', 'w') as f:
-            f.write(traceback.format_exc())
-        return (1, 'Failed to read message.json: ' + str(e))
+        emsg = 'Failed to read message.json: ' + str(e)
+        return throw_error(1, emsg, traceback.format_exc())
 
 
     # parse conversation to get conversation metadata and user list
@@ -172,10 +169,8 @@ def run(settings):
         with open(settings["user_data_folder"]  + 'output.txt', 'a', encoding='utf-8') as f:        
             f.write(msg_export)
     except Exception as e:
-        print('Error writing messages to output file: ' + str(e))
-        with open('error-log.txt', 'w') as f:
-            f.write(traceback.format_exc())
-        return (2, 'Messages failed to write to output file' + str(e))
+        emsg = 'Messages failed to write to output file' + str(e)
+        return throw_error(2, emsg, traceback.format_exc())
 
     print('Parser complete.')
 
@@ -189,10 +184,8 @@ def run(settings):
         try:
             html_converter.convert(msgs, settings, settings["user_data_folder"]) # this includes system messages even if they are disabled
         except Exception as e:
-            print('Error writing messages to html file: ' + str(e))
-            with open('error-log.txt', 'w') as f:
-                f.write(traceback.format_exc())
-            return (2, 'Messages failed to write to html file: ' + str(e))
+            emsg = 'Messages failed to write to html file: ' + str(e)
+            return throw_error(2, emsg, traceback.format_exc())
     
     print('Messages parsed successfully.')
     return (0, 'Messages parsed and exported')

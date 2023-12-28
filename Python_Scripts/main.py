@@ -1,7 +1,8 @@
 import PySimpleGUI as sg
 from json import (load as jsonload, dump as jsondump)
 from os import path
-
+from helper import write_to_error_log
+import traceback
 """
     A simple "settings" implementation.  Load/Edit/Save settings for your programs
     Uses json file format which makes it trivial to integrate into a Python program.  If you can
@@ -91,13 +92,15 @@ def load_settings(settings_file, default_settings):
 
 """ Save the given settings to the settings file """
 def save_settings(settings_file, settings, values):
-    if values:      # if there are stuff specified by another window, fill in those values
+    if values:      # if there is stuff specified by another window, fill in those values
         for key in SETTINGS_KEYS_TO_ELEMENT_KEYS:  # update window with the values read from settings file
             try:
                 settings[key] = values[SETTINGS_KEYS_TO_ELEMENT_KEYS[key]]
             except Exception as e:
-                print(f'Problem updating settings from window values. Key = {key}')
-                sg.popup(f'Problem updating settings from window values. Key = {key}', background_color='red', text_color='white')
+                emsg = f'Problem updating settings from window values for Key={key}: ' + str(e)
+                print(emsg)
+                write_to_error_log(emsg, traceback.format_exc())
+                sg.popup(emsg, background_color='red', text_color='white')
 
     with open(settings_file, 'w') as f:
         jsondump(settings, f)
@@ -111,8 +114,9 @@ def create_settings_window(settings):
 
     def TextLabel(text): return sg.Text(text+' ', justification='r', size=(len(text),1))
 
+    #TODO: make this look decent
     layout = [  [sg.Text('Settings', font='Any 15')],
-                [TextLabel('GroupMe Export Folder:'),sg.Input(key='-USER FOLDER-', size=(10,1)), sg.FolderBrowse(target='-USER FOLDER-')],
+                [TextLabel('GroupMe Export Folder:'),sg.Input(key='-USER FOLDER-', size=(20,1)), sg.FolderBrowse(target='-USER FOLDER-')],
                 [TextLabel('Newest messages at...'),sg.Radio('Top', "RADIO_1", key='-REVERSED-', default=True), sg.Radio('Bottom', "RADIO_1", default=False)],
                 [TextLabel(''),sg.Checkbox('Use nicknames?', key='-NICKNAMES-', default=False)],
                 [TextLabel(''),sg.Checkbox('Show System Messages?', key='-SYS MESSAGES-', default=True)],
@@ -133,8 +137,11 @@ def create_settings_window(settings):
         try:
             window[SETTINGS_KEYS_TO_ELEMENT_KEYS[key]].update(value=settings[key])
         except Exception as e:
-            print(f'Problem updating PySimpleGUI window from settings. Key = {key}')
-            sg.popup(f'Problem updating PySimpleGUI window from settings. Key = {key}', background_color='red', text_color='white')
+            emsg = f'Problem updating settings from window values for Key={key}: ' + str(e)
+            print(emsg)
+            write_to_error_log(emsg, traceback.format_exc())
+            sg.popup(emsg, background_color='red', text_color='white')
+
 
     return window
 
@@ -154,12 +161,17 @@ def main():
     window, settings = None, load_settings(SETTINGS_FILE, DEFAULT_SETTINGS )
 
     while True:
+        # create the main window if it doesn't exist
         if window is None:
             window = create_main_window(settings)
 
+        # get new event
         event, values = window.read()
+        
         if event in (None, 'Exit', 'Cancel'):
             break
+        
+        # if the edit settings button is clicked, open edit settings window
         if event == 'Edit Settings':
             event, values = create_settings_window(settings).read(close=True)
 
@@ -167,9 +179,12 @@ def main():
                 window.close()
                 window = None
                 save_settings(SETTINGS_FILE, settings, values)
-                
+        
+        # if the run parser button is clicked, open edit settings window
         if event == 'Run Parser':
             c, m = gmparser.run(settings)
+            
+            # match the completion code with the proper message/popup
             match(c):
                 case 0:
                     sg.popup(f'Success: {m}')

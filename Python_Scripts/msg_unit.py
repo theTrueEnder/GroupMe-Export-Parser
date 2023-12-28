@@ -1,11 +1,10 @@
-import attachments
-import events
+from attachments import Attachment
+from events import Event
 from helper import clean_text
 
 from datetime import datetime
 def unix_to_dt(time):
     return datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
-
 
 
 class msg_unit():
@@ -242,15 +241,15 @@ class msg_unit():
         self._created_at = json['created_at']
         self._favorited_by = json['favorited_by']
 
-        self._avatar_image = attachments.attachment({'type': 'image', 'url': self._avatar_url})
+        self._avatar_image = Attachment({'type': 'image', 'url': self._avatar_url})
         if json['attachments'] is not None:
             for a in json['attachments']:
                 if(a['type'] == 'image' and a['url'] is  None):
                     print("Error: image attachment has no url", self.msg_id)
-                self._attachments.append(attachments.attachment(a))
+                self._attachments.append(Attachment(a))
         if 'events' in json and json['events'] is not None:
             for e in json['events']:
-                self._events.append(events.event(e))
+                self._events.append(Event(e))
         self._favorite_count = len(self._favorited_by)
 
         self.time = unix_to_dt(self.created_at)
