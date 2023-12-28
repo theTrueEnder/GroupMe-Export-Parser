@@ -110,28 +110,59 @@ def save_settings(settings_file, settings, values):
 
 """ Create a settings window """
 def create_settings_window(settings):
-    sg.theme('DarkGrey7')
-
-    def TextLabel(text): return sg.Text(text+' ', justification='r', size=(len(text),1))
+    sg.theme('DarkGrey11')
 
     #TODO: make this look decent
-    layout = [  [sg.Text('Settings', font='Any 15')],
-                [TextLabel('GroupMe Export Folder:'),sg.Input(key='-USER FOLDER-', size=(20,1)), sg.FolderBrowse(target='-USER FOLDER-')],
-                [TextLabel('Newest messages at...'),sg.Radio('Top', "RADIO_1", key='-REVERSED-', default=True), sg.Radio('Bottom', "RADIO_1", default=False)],
-                [TextLabel(''),sg.Checkbox('Use nicknames?', key='-NICKNAMES-', default=False)],
-                [TextLabel(''),sg.Checkbox('Show System Messages?', key='-SYS MESSAGES-', default=True)],
-                [TextLabel('Note: System messages include polls and user joins/exits)')],
-                [TextLabel('- - - - - - - -')],
-                [TextLabel('FOLLWING SETTINGS ARE DISABLED')],
-                [TextLabel(''),sg.Checkbox('Enable Images?',   key='-IMAGES-',  default=True, disabled=True)], # disabled
-                [TextLabel(''),sg.Checkbox('Enable Files?',    key='-FILES-',   default=True, disabled=True)], # disabled
-                [TextLabel(''),sg.Checkbox('Enable Replies?' , key='-REPLIES-', default=True, disabled=True)], # disabled
-                [TextLabel(''),sg.Checkbox('Use Local Files?', key='-LOCAL-',   default=True, disabled=True)], # disabled
-                [TextLabel('Export Type:'),sg.Combo(['txt', 'pdf', 'html'], key='-EXPORT-', default_value='txt', disabled=True)], # disabled
-                [TextLabel('Split Type:'),sg.Combo(['none', 'num', 'size', 'length'], key='-SPLIT-', default_value='none', disabled=True)], # disabled
-                [sg.Button('Save Current Settings'), sg.Button('Cancel')]  ]
+    
+    
+    input_layout = [[
+                    sg.Text('GroupMe Export Folder:'),
+                    sg.Input(key='-USER FOLDER-', size=(40,1)), 
+                    sg.FolderBrowse(target='-USER FOLDER-')
+                ]]
+    message_layout =[
+        [
+            sg.Text('Newest messages at...'),
+            sg.Radio('Top', "RADIO_1", key='-REVERSED-', default=True), 
+            sg.Radio('Bottom', "RADIO_1", default=False)
+        ],[
+            sg.Checkbox('Use nicknames?', key='-NICKNAMES-', default=False),
+            sg.Checkbox('Enable Replies?' , key='-REPLIES-', default=True, disabled=True),
+            
+        ],
+    ]
+    output_layout = [
+        [
+            sg.Checkbox('Show System Messages?', key='-SYS MESSAGES-', default=True),
+            sg.Text('Note: This includes polls and user joins/exits)')            
+        ],[
+            sg.Checkbox('Enable images?', key='-IMAGES-', default=True, disabled=True),
+            sg.Checkbox('Enable file attachments?', key='-FILES-', default=True, disabled=True),
+            sg.Checkbox('Use Local Files?', key='-LOCAL-',   default=True, disabled=True)
+            
+        ],[ 
+            sg.Text('Export Type:'),
+            sg.Combo(['txt', 'pdf', 'html'], key='-EXPORT-', default_value='txt', disabled=True),
+            sg.Text('Split Type:'),
+            sg.Combo(['none', 'num', 'size', 'length'], key='-SPLIT-', default_value='none', disabled=True)
+        ]
+    ]
+    
+    
+    layout = [  [
+                    sg.Text('Settings', font='Any 15', justification='center', expand_x=True)
+                ],[
+                    sg.Frame('Input Location', input_layout)
+                ],[
+                    sg.Frame('Message Options', message_layout) 
+                ],[
+                    sg.Frame('Output Options', output_layout) 
+                ],[ # disabled
+                    sg.Button('Save Current Settings'),
+                    sg.Button('Cancel')
+            ]  ]
 
-    window = sg.Window('Settings', layout, finalize=True, resizable=True, size=(550,550), element_justification='r') 
+    window = sg.Window('Settings', layout, finalize=True, resizable=True, size=(550,340), element_justification='l') 
 
     for key in SETTINGS_KEYS_TO_ELEMENT_KEYS:   # update window with the values read from settings file
         try:
@@ -149,12 +180,25 @@ def create_settings_window(settings):
 def create_main_window(settings):
     sg.theme("DarkGrey11")
 
-    layout = [[sg.T('GroupMe Export Parser')],
-              [sg.T('Change the settings below to customize the export.')],
-              [sg.B('Edit Settings')],
-              [sg.B('Run Parser'), sg.B('Exit')]]
+    button_layout = [
+        [
+            sg.Button('Run Parser', button_color='green'), 
+            sg.Button('Edit Settings'),
+            sg.Button('Exit', button_color='red')
+        ]
+    ]
+    layout = [
+        [
+            sg.Text('GroupMe Export Parser', justification='center', font='Any 15', expand_x=True, 
+                       pad=(1,5))
+        ],[
+            sg.Text('Change the settings below to customize the export.')
+        ],[
+            sg.Frame("", button_layout, element_justification='center')
+        ]
+    ]
 
-    return sg.Window('Main Application', layout)
+    return sg.Window('GroupMe Export Parser - Main Menu', layout, element_justification='center')
 
 """ Main program event loop """
 def main():
