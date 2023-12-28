@@ -30,6 +30,14 @@ def clean_text(dirty):
         clean = clean.replace("”", '\\"')
         clean = clean.replace("—", '-')
         clean = clean.replace("–", '-')
+        clean = clean.replace("≠", '<Not Equal To>')
+        clean = clean.replace("≈", '<Almost Equal To>')
+        clean = clean.replace("ツ", '<Katakana Letter Tu>')
+        clean = clean.replace("Δ", '<Delta>')
+        clean = clean.replace("¯", '<Macron>')
+        clean = clean.replace(" ", '\n')
+        
+        
         clean = clean.replace('\u202c', '')
         clean = clean.replace('\u202d', '')
         

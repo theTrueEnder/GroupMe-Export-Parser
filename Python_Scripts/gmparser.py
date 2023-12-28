@@ -34,6 +34,26 @@ import traceback
 
 REVERSED = None
 
+#TODO find static url for the default GM pic
+# is the id static to the system? idk
+# took a guess on the roles as well
+SYSTEM_USER = json.loads('''
+    {
+        "user_id": "system",
+        "nickname": "system",
+        "image_url": "https://imgs.search.brave.com/4vMvrshEmayMwfpUjotgeYpsv9FuSInGyMZWQUR8Uhs/rs:fit:150:172:1/g:ce/aHR0cHM6Ly92aWdu/ZXR0ZTIud2lraWEu/bm9jb29raWUubmV0/L2xvZ29wZWRpYS9p/bWFnZXMvNS81Yi9H/cm91cE1lMjAxMi5w/bmcvcmV2aXNpb24v/bGF0ZXN0L3NjYWxl/LXRvLXdpZHRoLWRv/d24vMTUwP2NiPTIw/MTUwNjE0MjAwMTMx",
+        "id": "60768421",
+        "muted": false,
+        "autokicked": false,
+        "roles": [
+            
+            "admin",
+            "system"
+        ],
+        "name": "system"
+    }''')
+
+
 
 def throw_error(code, message, traceback_msg):
     print(message)
@@ -82,7 +102,8 @@ def run(settings):
     except Exception as e:
         emsg = 'Failed to open conversation.json: ' + str(e)
         return throw_error(1, emsg, traceback.format_exc())
-        
+    
+    raw_cvn['members'].append(SYSTEM_USER)
 
     # parse conversation json data
     print('Parsing conversation...')
@@ -106,7 +127,7 @@ def run(settings):
     ''' Get data from message.json, which is the actual content of the exported chat. '''
 
     # get message json data from file
-    print('Opening and cleaning message file...(this may take a moment)')
+    print('Opening and cleaning message file... (this may take a moment)')
     try:
         raw_msgs = get_clean_json(settings["user_data_folder"]  + 'message.json')
     except Exception as e:
@@ -119,7 +140,7 @@ def run(settings):
     msgs = []
     for msg in raw_msgs:
         tmp_msg = msg_unit.msg_unit()
-        tmp_msg.parse(msg)
+        tmp_msg.parse(msg, cvn)
 
         # if message is sent by a user or if a system message and system messages are enabled, append to message list
         if tmp_msg.senderType != 'system' or settings["enable_system_messages"]:
@@ -180,7 +201,7 @@ def run(settings):
         pass
 
     elif settings["export_type"] == 'html':
-        print('Exporting to .html...')
+        print('Exporting to HTML... (this may take a moment)')
         try:
             html_converter.convert(msgs, settings, settings["user_data_folder"]) # this includes system messages even if they are disabled
         except Exception as e:

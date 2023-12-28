@@ -13,14 +13,13 @@ HEADER = '''<!DOCTYPE html>
 </head>
 '''
 
-body = ''
 
 def string_to_html(string):
     string.replace('\n', '<br>')
     return html.escape(string, quote=True)
 
 
-def append_html_message(msg, settings):
+def append_html_message(msg, body, settings):
     hh_mm, date = msg.time.split(' ')
     name = msg.nickname if settings['nicknames'] else msg.name 
     image_attachment_html = ''
@@ -29,28 +28,41 @@ def append_html_message(msg, settings):
             image_attachment_html = f'<img src="{a.image_url}" class="card__image__attachment" alt="GroupMe Image" />'
             break # only one image per message ###############################
 
-    html_text = f'''
-        <div class="card">
-            <img src="{msg.avatar_url}" class="card__image" alt="GroupMe Image" />
-            <div class="card__content">
-            <time datetime="{hh_mm}" class="card__date"> <b>{name}</b> at {hh_mm} on {date}</time>
-            <span class="card__title">{msg.text}<span>
-            </div>
-                {image_attachment_html}
+    html_text = \
+    f'''
+    <div class="card">
+        <img src="{msg.avatar_url}" class="card__image" alt="GroupMe Image"/>
+        <div class="card__content">
+        <time datetime="{hh_mm}" class="card__date"> <b>{name}</b> at {hh_mm} on {date}</time>
+        <span class="card__title">{msg.text}<span>
         </div>
+            {image_attachment_html}
+    </div>
     '''
-    body += html_text
+    # body += html_text
     return html_text
 
 
 def convert(msgs, settings, filepath):
+    body = ''
+    count = 0
     for msg in msgs:
-        append_html_message(msg, settings)
-        
-    with open(filepath + 'output.html', 'w') as f:
-        f.write(string_to_html(HEADER + body))
-    webbrowser.open(filepath + 'output.html')
-
+        count += 1
+        t = append_html_message(msg, body, settings)
+        try:
+            with open(filepath + 'output.html', 'a', errors='namereplace') as f:
+                f.write(t)
+        except Exception as e:
+            print('Line', count)
+            print(t)
+            
+    
+    # try:
+    #     with open(filepath + 'output.html', 'w') as f:
+    #         f.write(string_to_html(HEADER + body))
+    #     webbrowser.open(filepath + 'output.html')
+    # except Exception as e:
+    #     print()
 # <p class="special">What color am I?</p>
 
 # image url:            "https://i.groupme.com/1242x2688.jpeg.80f237141d2c4ea5b24f2aab258c74af"

@@ -1,8 +1,9 @@
 import PySimpleGUI as sg
 from json import (load as jsonload, dump as jsondump)
 from os import path
-from helper import write_to_error_log
+from helper import write_to_error_log, clear_error_log
 import traceback
+import gmparser
 """
     A simple "settings" implementation.  Load/Edit/Save settings for your programs
     Uses json file format which makes it trivial to integrate into a Python program.  If you can
@@ -44,8 +45,6 @@ import traceback
 }
 '''
 
-#import Python_Scripts.gmparser as gmparser
-import gmparser
 
 SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
 
@@ -105,7 +104,6 @@ def save_settings(settings_file, settings, values):
     with open(settings_file, 'w') as f:
         jsondump(settings, f)
 
-    sg.popup('Settings saved')
 
 
 """ Create a settings window """
@@ -115,11 +113,14 @@ def create_settings_window(settings):
     #TODO: make this look decent
     
     
-    input_layout = [[
-                    sg.Text('GroupMe Export Folder:'),
-                    sg.Input(key='-USER FOLDER-', size=(40,1)), 
-                    sg.FolderBrowse(target='-USER FOLDER-')
-                ]]
+    input_layout = [
+        [
+            sg.Text('GroupMe Export Folder:'),
+            sg.Input(key='-USER FOLDER-', size=(40,1)), 
+            sg.FolderBrowse(target='-USER FOLDER-')
+        ]
+    ]
+    
     message_layout =[
         [
             sg.Text('Newest messages at...'),
@@ -131,6 +132,7 @@ def create_settings_window(settings):
             
         ],
     ]
+    
     output_layout = [
         [
             sg.Checkbox('Show System Messages?', key='-SYS MESSAGES-', default=True),
@@ -142,25 +144,27 @@ def create_settings_window(settings):
             
         ],[ 
             sg.Text('Export Type:'),
-            sg.Combo(['txt', 'pdf', 'html'], key='-EXPORT-', default_value='txt', disabled=True),
+            sg.Combo(['txt', 'pdf', 'html'], key='-EXPORT-', default_value='txt', disabled=False),
             sg.Text('Split Type:'),
             sg.Combo(['none', 'num', 'size', 'length'], key='-SPLIT-', default_value='none', disabled=True)
         ]
     ]
     
     
-    layout = [  [
-                    sg.Text('Settings', font='Any 15', justification='center', expand_x=True)
-                ],[
-                    sg.Frame('Input Location', input_layout)
-                ],[
-                    sg.Frame('Message Options', message_layout) 
-                ],[
-                    sg.Frame('Output Options', output_layout) 
-                ],[ # disabled
-                    sg.Button('Save Current Settings'),
-                    sg.Button('Cancel')
-            ]  ]
+    layout = [
+        [
+            sg.Text('Settings', font='Any 15', justification='center', expand_x=True)
+        ],[
+            sg.Frame('Input Location', input_layout)
+        ],[
+            sg.Frame('Message Options', message_layout) 
+        ],[
+            sg.Frame('Output Options', output_layout) 
+        ],[ # disabled
+            sg.Button('Save Current Settings'),
+            sg.Button('Cancel')
+        ]
+    ]
 
     window = sg.Window('Settings', layout, finalize=True, resizable=True, size=(550,340), element_justification='l') 
 
@@ -187,6 +191,7 @@ def create_main_window(settings):
             sg.Button('Exit', button_color='red')
         ]
     ]
+    
     layout = [
         [
             sg.Text('GroupMe Export Parser', justification='center', font='Any 15', expand_x=True, 
@@ -200,10 +205,12 @@ def create_main_window(settings):
 
     return sg.Window('GroupMe Export Parser - Main Menu', layout, element_justification='center')
 
+
 """ Main program event loop """
 def main():
     window, settings = None, load_settings(SETTINGS_FILE, DEFAULT_SETTINGS )
-
+    clear_error_log()
+    
     while True:
         # create the main window if it doesn't exist
         if window is None:
@@ -234,12 +241,15 @@ def main():
                     sg.popup(f'Success: {m}')
                 case 1:
                     print(f'Read Error: {m}')
-                    sg.popup('Completion error: ' + m + ". See error-log.txt for more details.", background_color='red', text_color='white')
+                    sg.popup('Completion error: ' + m + ". See error-log.txt for more details.", 
+                             background_color='red', text_color='white')
                 case 2:
                     print(f'Write Error: {m}')
-                    sg.popup('Completion error: ' + m + ". See error-log.txt for more details.", background_color='red', text_color='white')
+                    sg.popup('Completion error: ' + m + ". See error-log.txt for more details.", 
+                             background_color='red', text_color='white')
                 
             break
+        
     window.close()
 
 

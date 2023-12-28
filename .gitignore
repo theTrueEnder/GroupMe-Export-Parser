@@ -8,3 +8,6 @@ Python_Scripts/settings_file.cfg
 .gitignore
 Python_Scripts/build/*
 .vscode/launch.json
+Python_Scripts/error-log.txt
+Python_Scripts/settings_file.cfg
+Python_Scripts/output.html

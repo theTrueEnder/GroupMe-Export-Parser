@@ -137,7 +137,7 @@ class msg_unit():
     def text(self):
         del self._text
     
-    ''' USER_id '''
+    ''' USER_ID '''
     @property
     def user_id(self):
         return self._user_id
@@ -225,17 +225,28 @@ class msg_unit():
     def favorite_count(self):
         del self._favorite_count
 
-
-    def parse(self, json):
+    ''' NICKNAME'''
+    @property
+    def nickname(self):
+        return self._nickname
+    @nickname.setter
+    def nickname(self, value):
+        self._nickname = value
+    @nickname.deleter
+    def nickname(self):
+        del self._nickname
+        
+        
+    def parse(self, json, cvn):
         self._avatar_url = json['avatar_url']
         self._group_id = json['group_id']
         self._msg_id = json['id']
-        self._name = clean_text(json['name'])
+        self._name = json['name']
         self._sender_id = json['sender_id']
         self._senderType = json['sender_type']
         self._sourceGUID = json['source_guid']
         self._system = json['system']
-        self._text = clean_text(json['text'])
+        self._text = json['text']
         self._user_id = json['user_id']
         self._platform = json['platform']
         self._created_at = json['created_at']
@@ -253,7 +264,17 @@ class msg_unit():
         self._favorite_count = len(self._favorited_by)
 
         self.time = unix_to_dt(self.created_at)
-
+        
+        thisuser = cvn.get_member_by_id(self._sender_id)
+        if thisuser is None:
+            self._nickname = "Deleted User"
+        else:
+            self._nickname = thisuser.nickname
+        # except Exception as e:
+        #     print("Tried sender id:", self._sender_id)
+        #     print("Message:", self._text)
+        #     print(thisuser)
+        #     raise e
     
 
     # returns the msg_unit's message, sender, and time in a dict

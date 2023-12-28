@@ -6,6 +6,14 @@ class User:
         self._id = id
         self._name = name
 
+    def __str__(self) -> str:
+        s =  f"User object: {self._user_id}\n"
+        s += f"\tName:       {self._name}\n"
+        s += f"\tNickname:   {self._nickname}\n"
+        s += f"\tID:         {self._id}"
+        s += f"\tAvatar URL: {self._avatar_url}\n"
+        return s
+
     """ NICKNAME """
 
     @property
