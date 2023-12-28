@@ -14,10 +14,12 @@ def clear_error_log():
 # Remove bad characters created from encoding conversion
 def clean_text(dirty):
     if dirty is not None:
-        #if "´" or "’" or "`" or "�" or "“" or "”" or '\u202c' or '\u202d' in dirty:
         clean = dirty
-        # clean = emoji.demojize(clean.decode("UTF-8", errors="ignore"))
+
+        # converts all emoji into their ascii aliases
         clean = emoji.demojize(clean)
+
+        # replace known invalid characters with acceptable substitutions
         clean = clean.replace("…", "...")
         clean = clean.replace("￼", "<?>")
         clean = clean.replace("´", "'")
@@ -27,9 +29,12 @@ def clean_text(dirty):
         clean = clean.replace("“", '\\"')
         clean = clean.replace("”", '\\"')
         clean = clean.replace("—", '-')
-        
+        clean = clean.replace("–", '-')
         clean = clean.replace('\u202c', '')
         clean = clean.replace('\u202d', '')
+        
+        # drop all remaining non-UTF-8 characters that were not caught by the previous lines
+        clean = clean.encode('UTF8', errors='ignore').decode('UTF8')
         return clean
     else:
         return None
