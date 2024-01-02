@@ -32,7 +32,7 @@ from helper import clean_text, get_clean_json, write_to_error_log
 import emoji
 import traceback
 
-REVERSED = None
+# REVERSED = None
 
 #TODO find static url for the default GM pic
 # is the id static to the system? idk
@@ -61,11 +61,11 @@ def throw_error(code, message, traceback_msg):
     return (code, message)
 
 """ Add a message to the message list (accounts for reversal option) """
-def add_msg(msg_list, msg):
-    if REVERSED:
-        msg_list.insert(0, msg)
-    else:
+def add_msg(msg_list, msg, reversed):
+    if reversed:
         msg_list.append(msg)
+    else:
+        msg_list.insert(0, msg)
     return msg_list
 
 def run(settings):
@@ -79,7 +79,7 @@ def run(settings):
 
     #TODO clean up
     # get settings
-    REVERSED = settings["reversed"]
+    reversed = settings["reversed"]
     settings["nicknames"]
     settings["enable_system_messages"]
     #settings["enable_images"]
@@ -170,15 +170,19 @@ def run(settings):
      
     # put all messages into one list
     concat_msgs = []
+    msg_export = ''
     for msg in s:
+        full_message = ''
         for part in msg:
             # if message part won't concatenate, ignore
             try:
                 part + 'teststring'
-                concat_msgs = add_msg(concat_msgs, part)
+                full_message += part
+                # concat_msgs = add_msg(concat_msgs, part, True)
             except: 
                 continue
-        concat_msgs = add_msg(concat_msgs, '\n')
+        full_message += '\n'
+        concat_msgs = add_msg(concat_msgs, full_message, reversed)
 
     msg_export = ''.join(concat_msgs)
     msg_export = emoji.emojize(msg_export)  # turn the emoji placeholders back into Unicode characters

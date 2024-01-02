@@ -33,7 +33,7 @@ import gmparser
 '''
 {
     "user_data_folder": None, 
-    "reversed": "True",
+    "reversed": "False",
     "nicknames": "False",
     "enable_system_messages": "True",
     "enable_images": "True",
@@ -50,7 +50,7 @@ SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
 
 DEFAULT_SETTINGS = {
     "user_data_folder": '/', # change to None later
-    "reversed": "True",
+    "reversed": "False",
     "nicknames": "False",
     "enable_system_messages": "True",
     "enable_images": "True",
@@ -125,7 +125,7 @@ def create_settings_window(settings):
         [
             sg.Text('Newest messages at...'),
             sg.Radio('Top', "RADIO_1", key='-REVERSED-', default=True), 
-            sg.Radio('Bottom', "RADIO_1", default=False)
+            sg.Radio('Bottom', "RADIO_1", key='-NOTREVERSED-', default=True)
         ],[
             sg.Checkbox('Use nicknames?', key='-NICKNAMES-', default=False),
             sg.Checkbox('Enable Replies?' , key='-REPLIES-', default=True, disabled=True),
