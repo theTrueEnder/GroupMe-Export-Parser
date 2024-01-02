@@ -30,20 +30,6 @@ import gmparser
 #Split by num, size, or length
 '''END PARAMETERS'''
 
-'''
-{
-    "user_data_folder": None, 
-    "reversed": "False",
-    "nicknames": "False",
-    "enable_system_messages": "True",
-    "enable_images": "True",
-    "enable_files": "True",
-    "enable_replies": "True",
-    "use_local_files": "True",
-    "export_type": "txt",
-    "split_type": "none"
-}
-'''
 
 
 SETTINGS_FILE = path.join(path.dirname(__file__), r'settings_file.cfg')
@@ -58,7 +44,8 @@ DEFAULT_SETTINGS = {
     "enable_replies": "True",
     "use_local_files": "True",
     "export_type": "txt",
-    "split_type": "none"
+    "split_type": "none",
+    "timezone_offset": "-5"
 }
 
 # "Map" from the settings dictionary keys to the window's element keys
@@ -72,7 +59,8 @@ SETTINGS_KEYS_TO_ELEMENT_KEYS = {
     'enable_replies' : '-REPLIES-',
     'use_local_files' : '-LOCAL-',
     'export_type' : '-EXPORT-',
-    'split_type' : '-SPLIT-'
+    'split_type' : '-SPLIT-',
+    "timezone_offset": '-TZ-OFFSET-'
 }
 
 
@@ -130,7 +118,10 @@ def create_settings_window(settings):
             sg.Checkbox('Use nicknames?', key='-NICKNAMES-', default=False),
             sg.Checkbox('Enable Replies?' , key='-REPLIES-', default=True, disabled=True),
             
-        ],
+        ],[
+            sg.Text('UTC Offset? (EST=-5)'),
+            sg.Spin(list(range(-24,25,1)), -5, key='-TZ-OFFSET-', size=(3,1))
+        ]
     ]
     
     output_layout = [

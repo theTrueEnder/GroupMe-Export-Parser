@@ -1,10 +1,14 @@
 from attachments import Attachment
 from events import Event
-from helper import clean_text
+# from helper import clean_text
 
-from datetime import datetime
-def unix_to_dt(time):
-    return datetime.utcfromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
+from datetime import datetime, timezone, timedelta
+def unix_to_dt(etime, local_tz):
+    # dt = datetime.utcfromtimestamp(etime)
+    
+    dt = datetime.fromtimestamp(etime, tz=local_tz)    
+    s = dt.strftime('%Y-%m-%d %H:%M:%S')
+    return s
 
 
 class msg_unit():
@@ -29,6 +33,7 @@ class msg_unit():
         self._favorite_count = 0
 
         self.time = None
+        self._local_tz = None
 
     ''' AVATAR URL '''
     @property
@@ -181,7 +186,7 @@ class msg_unit():
     def favorited_by(self):
         del self._favorited_by
 
-    ''' AVATAR IMAGE'''
+    ''' AVATAR IMAGE '''
     @property
     def avatar_image(self):
         return self._avatar_image
@@ -214,7 +219,7 @@ class msg_unit():
     def events(self):
         del self._events
     
-    ''' FAVORITE COUNT'''
+    ''' FAVORITE COUNT '''
     @property
     def favorite_count(self):
         return self._favorite_count
@@ -225,7 +230,7 @@ class msg_unit():
     def favorite_count(self):
         del self._favorite_count
 
-    ''' NICKNAME'''
+    ''' NICKNAME '''
     @property
     def nickname(self):
         return self._nickname
@@ -236,8 +241,22 @@ class msg_unit():
     def nickname(self):
         del self._nickname
         
+    ''' TIMEZONE '''
+    @property
+    def local_tz(self):
+        return self._local_tz
+    @local_tz.setter
+    def local_tz(self, utc_offset):
+        if abs(utc_offset) > 24:
+            utc_offset %= 24
+        hours_from_utc = timedelta(hours=utc_offset)
+        self._local_tz = timezone(hours_from_utc)
+    @local_tz.deleter
+    def local_tz(self):
+        del self._local_tz
         
-    def parse(self, json, cvn):
+        
+    def parse(self, json, cvn, tz):
         self._avatar_url = json['avatar_url']
         self._group_id = json['group_id']
         self._msg_id = json['id']
@@ -263,7 +282,8 @@ class msg_unit():
                 self._events.append(Event(e))
         self._favorite_count = len(self._favorited_by)
 
-        self.time = unix_to_dt(self.created_at)
+        self.local_tz = tz
+        self.time = unix_to_dt(self.created_at, self.local_tz)
         
         thisuser = cvn.get_member_by_id(self._sender_id)
         if thisuser is None:

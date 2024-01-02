@@ -88,6 +88,7 @@ def run(settings):
     #settings["use_local_files"]
     settings["export_type"]
     #settings["split_type"]
+    #settings["timezone_offset"]
 
 
     '''
@@ -138,9 +139,10 @@ def run(settings):
     # parse conversation to get conversation metadata and user list
     print('Parsing messages...')
     msgs = []
+    tz = settings["timezone_offset"]
     for msg in raw_msgs:
         tmp_msg = msg_unit.msg_unit()
-        tmp_msg.parse(msg, cvn)
+        tmp_msg.parse(msg, cvn, tz)
 
         # if message is sent by a user or if a system message and system messages are enabled, append to message list
         if tmp_msg.senderType != 'system' or settings["enable_system_messages"]:
