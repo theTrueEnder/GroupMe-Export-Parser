@@ -74,5 +74,6 @@ Q: How much time did this take?
 ## Known Errors
 
 - [ ] Deleted/Exited users' id showing instead of name/nickname
+- [ ] Does not adjust for time zones
 - [X] ~~GroupMe emoji not transferring (they're stupid).~~ This should be good now? More extensive testing needs to be done though.
 - [X] ~~Error when running GUI initially~~
