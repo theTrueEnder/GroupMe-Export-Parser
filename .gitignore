@@ -11,3 +11,7 @@ Python_Scripts/build/*
 Python_Scripts/error-log.txt
 Python_Scripts/settings_file.cfg
 Python_Scripts/output.html
+error-log.txt
+Python_Scripts/output.html
+*.cfg
+*.html
