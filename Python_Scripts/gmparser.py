@@ -163,7 +163,7 @@ def run(settings):
                 msg['sender'] = temp_member.nickname
             else:
                 msg['sender'] = temp_member.name
-            s.append([ #this is the message format, for customization see here
+            s.append([ # this is the message format, for customization see here
                 msg["sender"], 
                 f' at {msg["time"]}: ', 
                 msg["message"]

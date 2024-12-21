@@ -3,12 +3,13 @@ from events import Event
 # from helper import clean_text
 
 from datetime import datetime, timezone, timedelta
+
+# convert a unix timestamp to a datetime object 
 def unix_to_dt(etime, local_tz):
     # dt = datetime.utcfromtimestamp(etime)
     
     dt = datetime.fromtimestamp(etime, tz=local_tz)    
-    s = dt.strftime('%Y-%m-%d %H:%M:%S')
-    return s
+    return dt.strftime('%Y-%m-%d %H:%M:%S')
 
 
 class msg_unit():
