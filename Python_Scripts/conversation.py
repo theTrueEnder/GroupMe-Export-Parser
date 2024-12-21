@@ -46,9 +46,9 @@ class Conversation:
 
     """ Return conversation data as a string """
     def export(self):
-        s = "Group:       " + self.name
-        s += "\nDescription: " + self.description
-        s += "\nDetails:" + self.description
+        s = "Group:       " + str(self.name)
+        s += "\nDescription: " + str(self.description)
+        # s += "\nDetails:" + str(self.description)
         s += "\n\t" + str(self.msg_count) + " messages"
         s += "\n\t" + str(len(self.members)) + " members"
         s += "\n"

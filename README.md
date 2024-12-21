@@ -16,9 +16,16 @@
 ## Installation Instructions
 1. Export the desired GroupMe conversation (use the instructions [here](https://support.microsoft.com/en-us/office/how-do-i-export-my-groupme-data-1f6875bf-7871-4ade-8608-4c606cd5f518)) and unzip it
 3. Ensure you have a recent version of [Python](https://python.org) installed
-4. Download the GroupMe-Export-Parser
+4. Download the GroupMe-Export-Parser and setup venv (setting up a venv can be done through VSCode as well)
+    1. `cd` to the desired installation directory
+    2. `git clone https://github.com/theTrueEnder/GroupMe-Export-Parser.git`
+    3. `pip install virtualenv` (if you don't already have virtualenv installed)
+    4. `virtualenv venv` # creates new virtual environment
+    5. `source venv/bin/activate` to enter the virtual environment
+    6. `pip install -r requirements.txt` # installs the requirements in current environment
 5. ~~Run the exe file~~ **WARNING: THE EXE DOES *NOT* WORK AT THE CURRENT STAGE OF DEVELOPMENT**
-6. Run `main.py`
+6. Run `python main.py`
+    > If you encounter an error related to Tcl or tk, `pip install tcl` and copy the folder (`C:\Program Files\Python{VERSION}\tcl`) to the `.venv` folder.
 7. Set the location of the inner unzipped folder of your export (the name should be a sequence of 8 numbers or so) in the settings menu
 8. Enter any other preferred settings into GUI
 9. Click `Run Parser`

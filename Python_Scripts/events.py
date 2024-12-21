@@ -102,6 +102,7 @@ class Event():
             except:
                 temp_option["votes"] = 0
                 temp_option["voter_ids"] = []
+                
             self.options.append(temp_option)
 
 

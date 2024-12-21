@@ -310,7 +310,7 @@ class msg_unit():
         return f'message: {self.text} \nsender: {self.sender_id} \ntime: {self.time}'
 
     def __str__(self):
-        s = self.name + " at " + unix_to_dt(self.createdt) + ": " + self.text
+        s = str(self.name) + " at " + unix_to_dt(self.time, self._local_tz) + ": " + str(self.text)
         print(f"${s:20}")
 
     def get_attachments(self):
